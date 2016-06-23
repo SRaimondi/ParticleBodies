@@ -27,7 +27,7 @@ namespace pb {
         // Math class declaration
     //    template <typename T, size_t const w, size_t const h> class Matrix;
         template <typename T, size_t const len> class Vector;
-    //    template <typename T> class Quaternion;
+        template <typename T> class Quaternion;
 
         // Convert radians to degree
         template <typename T>
@@ -490,6 +490,187 @@ namespace pb {
         static inline T angle(Vector<T, len> const & a, Vector<T, len> const & b) {
             return (arccos(dot(a, b)));
         }
+        
+        // Quaternion class
+        template <typename T>
+        class Quaternion {
+        public:
+            // Empty constructor
+            inline Quaternion() {}
+
+            inline Quaternion(Quaternion const & q)
+            : r(q.r), v(q.v) {}
+
+            // Quaternion form real value
+            inline Quaternion(T const & real)
+            : r(real), v(T(0)) {}
+
+            inline Quaternion(T const & real, Vector3<T> const & axis)
+            : r(real), v(axis) {}
+
+            inline Quaternion(Vector4<T> const & v)
+            : r(v[0]), v(v[1], v[2], v[3]) {}
+
+            inline Quaternion(T const & real, T const & x, T  const & y, T const & z)
+            : r(real), v(x. y. z) {}
+
+            inline T & operator[](size_t const n) {
+                return (a[n]);
+            }
+
+            inline T const & operator[](size_t const n) const {
+                return (a[n]);
+            }
+
+            inline Quaternion operator+(Quaternion const & q) const {
+                return (Quaternion(r + q.r, v + q.v));
+            }
+
+            inline Quaternion & operator+=(Quaternion const & q) {
+                r += q.r;
+                v += q.v;
+
+                return (*this);
+            }
+
+            inline Quaternion operator-(Quaternion const & q) const {
+                return Quaternion(r - q.r, v - q.v);
+            }
+
+            inline Quaternion & operator-=(Quaternion const & q) {
+                r -= q.r;
+                v -= q.v;
+
+                return (*this);
+            }
+
+            inline Quaternion operator-() const {
+                return Quaternion(-r, -v);
+            }
+
+            inline Quaternion operator*(T const & s) const {
+                return (Quaternion(a[0] * s, a[1] * s, a[2] * s, a[3] * s));
+            }
+
+            inline Quaternion & operator*=(T const & s) {
+                r *= s;
+                v *= s;
+
+                return (*this);
+            }
+
+            inline Quaternion operator*(Quaternion const & q) const {
+                return (Quaternion(r * q.r - vmath::dot(v, q.v), r * q.v + q.r * v + vmath::cross(v, q.v)));
+            }
+
+            inline Quaternion operator/(T const & s) const {
+                return (Quaternion(a[0] / s, a[1] / s, a[2] / s, a[3] / s));
+            }
+
+            inline Quaternion & operator/=(T const & s) {
+                r /= s;
+                v /= s;
+
+                return (*this);
+            }
+
+            inline Vector4<T> & operator()(void) {
+                return (*(Vector4<T>*)&a[0]);
+            }
+
+            inline Vector4<T> const & operator()(void) const {
+                return (*(Vector4<T> const *)&a[0]);
+            }
+
+            inline bool operator==(Quaternion const & q) const {
+                return (r == q.r) && (v == q.v);
+            }
+
+            inline bool operator!=(Quaternion const & q) const {
+                return (r != q.r) || (v != q.v);
+            }
+
+//            inline matNM<T,4,4> asMatrix() const
+//            {
+//                matNM<T,4,4> m;
+//
+//                const T xx = x * x;
+//                const T yy = y * y;
+//                const T zz = z * z;
+//                const T ww = w * w;
+//                const T xy = x * y;
+//                const T xz = x * z;
+//                const T xw = x * w;
+//                const T yz = y * z;
+//                const T yw = y * w;
+//                const T zw = z * w;
+//
+//                m[0][0] = T(1) - T(2) * (yy + zz);
+//                m[0][1] =        T(2) * (xy - zw);
+//                m[0][2] =        T(2) * (xz + yw);
+//                m[0][3] =        T(0);
+//
+//                m[1][0] =        T(2) * (xy + zw);
+//                m[1][1] = T(1) - T(2) * (xx + zz);
+//                m[1][2] =        T(2) * (yz - xw);
+//                m[1][3] =        T(0);
+//
+//                m[2][0] =        T(2) * (xz - yw);
+//                m[2][1] =        T(2) * (yz + xw);
+//                m[2][2] = T(1) - T(2) * (xx + yy);
+//                m[2][3] =        T(0);
+//
+//                m[3][0] =        T(0);
+//                m[3][1] =        T(0);
+//                m[3][2] =        T(0);
+//                m[3][3] =        T(1);
+//
+//                return m;
+//            }
+
+        private:
+            // Quaternion data
+            union {
+                struct {
+                    T           r;
+                    Vector3<T>  v;
+                };
+                struct {
+                    T           x;
+                    T           y;
+                    T           z;
+                    T           w;
+                };
+                T               a[4];
+            };
+        };
+
+        // Define quaternion types
+        typedef Quaternion<float> quaternion;
+        typedef Quaternion<int> iquaternion;
+        typedef Quaternion<unsigned int> uquaternion;
+        typedef Quaternion<double> dquaternion;
+
+        template <typename T>
+        static inline Quaternion<T> operator*(T const & a, Quaternion<T> const & b) {
+            return (b * a);
+        }
+
+        template <typename T>
+        static inline Quaternion<T> operator/(T const & a, Quaternion<T> const & b) {
+            return (Quaternion<T>(a / b[0], a / b[1], a / b[2], a / b[3]));
+        }
+
+        template <typename T>
+        static inline Quaternion<T> normalize(Quaternion<T> const & q) {
+            return (q / length(Vector<T, 4>(q)));
+        }
+        
+        template <typename T>
+        static inline Quaternion<T> angleAxis(T const & angle, Vector<T, 3> const & axis) {
+            return (Quaternion<T>(cos(radians(angle) / 2.0), sin(radians(angle) / 2.0) * normalize(axis)));
+        }
+
 
     } // vmath namespace
 } // pb namespace
