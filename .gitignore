@@ -27,3 +27,5 @@
 *.exe
 *.out
 *.app
+ParticleBodies/build/Debug/Cygwin-Windows/source/particle.o.d
+ParticleBodies/build/Debug/Cygwin-Windows/main.o.d
