@@ -47,27 +47,22 @@ namespace pb {
 
 					// Check intersection with object
 					bool entering = false;
-					float t;
 					// Check if we intersect the object
-					if (intersect(ray_start, voxel_x_dir, 0.f, 1.f, &t, &entering)) {
+					if (intersect(ray_start, math::normalize(voxel_x_dir), 0.f, particle_diameter, &entering)) {
 						// Check if we are entering
 						if (entering) {
-							// Check if intersection is before half
-							if (t <= 0.5f) {
-								// Add particle
-								body_particles.push_back(Particle((ray_start + 0.5f * voxel_x_dir) - center_of_mass, particle_diameter / 2.f));
-							}
+							// Add particle
+							body_particles.push_back(Particle((ray_start + 0.5f * voxel_x_dir) - center_of_mass, particle_diameter / 2.f));
 							// Set we are now inside the object
 							inside_object = true;
 						} else {
-							// We are exiting the object, check if intersection is after half
-							if (t >= 0.5f) {
-								// Add particle
-								body_particles.push_back(Particle((ray_start + 0.5f * voxel_x_dir) - center_of_mass, particle_diameter / 2.f));
-							}
-							// Set we are outside the object
+							// Add particle
+							body_particles.push_back(Particle((ray_start + 0.5f * voxel_x_dir) - center_of_mass, particle_diameter / 2.f));
+							// Set we are going out of the object
 							inside_object = false;
 						}
+
+					// Check if we are already inside the object so we need to add a particle
 					} else if (inside_object) {
 						// Add particle
 						body_particles.push_back(Particle((ray_start + 0.5f * voxel_x_dir) - center_of_mass, particle_diameter / 2.f));
