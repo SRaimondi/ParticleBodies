@@ -17,7 +17,6 @@ void resize(GLFWwindow* window);
 
 /* Data for the camera navigation */
 static glm::vec3 prev_position;
-static glm::vec3 forward_dir;
 static float phi, tao, r;
 
 int main(void) {
@@ -50,7 +49,7 @@ int main(void) {
 	double window_width = mode->width;
 	double window_height = mode->height;
 
-	window = glfwCreateWindow(800, 800, "Particle bodies", NULL, NULL);
+	window = glfwCreateWindow(window_width, window_height, "Particle bodies", monitor, NULL);
 
 	if (!window) {
 		glfwTerminate();
@@ -92,7 +91,7 @@ int main(void) {
 
 	// Create sphere
 	pb::Sphere sphere = pb::Sphere(pb::math::vec3f({ 0.f, 0.f, 0.f }), 1.f);
-	sphere.generateBodyParticles(0.1f);
+	sphere.generateBodyParticles(0.08f);
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window)) {
@@ -151,12 +150,6 @@ void resize(GLFWwindow* window) {
 	glLoadIdentity();
 	glFrustum(-ratio, ratio, -1.f, 1.f, 1.f, 150.f);
 	//glOrtho(-4.f, 4.f, -4.f, 4.f, 1.f, 10.f);
-
-	//glMatrixMode(GL_MODELVIEW);
-	//glLoadIdentity();
-	//glLightfv(GL_LIGHT0, GL_POSITION, lightpos0);
-	//glm::mat4 look_at = glm::lookAt(glm::vec3(10.f, 10.f, 10.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f));
-	//glMultMatrixf(&look_at[0][0]);
 }
 
 
@@ -195,14 +188,10 @@ void update_view(GLFWwindow* window, glm::vec3 const & look_at) {
 	cam_pos.y = look_at.y + r * cos(tao);
 	cam_pos.z = look_at.z + r * sin(tao) * cos(phi);
 
-	forward_dir = look_at - cam_pos;
-	forward_dir.y = 0.f;
-	forward_dir = glm::normalize(forward_dir);
-
 	M = glm::lookAt(cam_pos, look_at, glm::vec3(0.f, 1.f, 0.f));
 
 	// Compute light position
-	GLfloat lightpos0[] = { look_at.x, look_at.y + 10.f, look_at.z, 1.f };
+	GLfloat lightpos0[] = { 0.f, 1.f, 0.f, 0.f };
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

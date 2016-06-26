@@ -1,7 +1,5 @@
 #pragma once
 
-// Define small tolerance
-#define EPS 10e-5f
 // Define pi constant
 #define PI 3.14159265f
 // Define 2 pi constants

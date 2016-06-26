@@ -12,12 +12,12 @@ namespace pb {
 		// Set BBOX minimum
 		*min = math::vec3f({ center_of_mass(0) - radius,
 						   center_of_mass(1) - radius,
-						   center_of_mass(2) - radius });
+						   center_of_mass(2) - radius});
 
 		// Set BBOX maximum
 		*max = math::vec3f({ center_of_mass(0) + radius,
 						   center_of_mass(1) + radius,
-						   center_of_mass(2) + radius });
+						   center_of_mass(2) + radius});
 	}
 
 	bool Sphere::intersect(math::vec3f const & start, math::vec3f const & direction,
@@ -55,6 +55,11 @@ namespace pb {
 
 		// Intersection found
 		return true;
+	}
+
+	bool Sphere::voxelInside(math::vec3f const & voxel_center, float const ) const {
+		// Check if distance between center and voxel center is less than radius
+		return (math::magnitude(voxel_center - center_of_mass) < radius);
 	}
 
 } // pb namespace

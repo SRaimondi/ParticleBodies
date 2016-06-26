@@ -21,6 +21,9 @@ namespace pb {
 					   float const tmin, float const tmax,
 					   bool * entering) const;
 
+		// Check if voxel is inside the body
+		bool voxelInside(math::vec3f const & voxel_center, float const voxel_side) const;
+
 	private:
 		// Sphere radius
 		float const radius;

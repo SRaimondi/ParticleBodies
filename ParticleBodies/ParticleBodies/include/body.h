@@ -4,6 +4,9 @@
 #include "particle.h"
 #include <vector>
 
+// Define small BBOX tollerance
+#define EPS 10e-4f
+
 namespace pb {
 
 	// This class defines the basic body interface, all objects that run in the simulation
@@ -32,6 +35,9 @@ namespace pb {
 		virtual bool intersect(math::vec3f const & start, math::vec3f const & direction,
 							   float const tmin, float const tmax,
 							   bool * entering) const = 0;
+
+		// Check if voxel is inside the body
+		virtual bool voxelInside(math::vec3f const & voxel_center, float const voxel_side) const = 0;
 
 		// Center of mass of the body
 		math::vec3f center_of_mass;
