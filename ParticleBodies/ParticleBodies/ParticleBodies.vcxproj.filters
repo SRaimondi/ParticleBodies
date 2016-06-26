@@ -25,6 +25,9 @@
     <Filter Include="Source Files\particle">
       <UniqueIdentifier>{519c4d13-462f-4a2e-bc8c-33e0e2c818e1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\body">
+      <UniqueIdentifier>{07c5715e-1424-40e8-9716-2a25d0678cfe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\math_utilities.h">
@@ -60,6 +63,9 @@
     <ClInclude Include="include\quaternion.h">
       <Filter>Header Files\math</Filter>
     </ClInclude>
+    <ClInclude Include="include\body.h">
+      <Filter>Header Files\body</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -67,6 +73,9 @@
     </ClCompile>
     <ClCompile Include="source\particle.cpp">
       <Filter>Source Files\particle</Filter>
+    </ClCompile>
+    <ClCompile Include="source\body.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
