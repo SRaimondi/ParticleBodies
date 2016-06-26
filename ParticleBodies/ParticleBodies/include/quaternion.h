@@ -34,6 +34,14 @@ namespace pb {
 		template <typename T>
 		Quaternion<T> normalize(Quaternion<T> const & q);
 
+		// Conjugate quaternion
+		template <typename T>
+		Quaternion<T> conjugate(Quaternion<T> const & q);
+
+		// Transform vector by quaternion
+		template <typename T>
+		Matrix<T, 3, 1> transformVectorByQuaternion(Quaternion<T> const & q, Matrix<T, 3, 1> const & v);
+
 		// Define quaternion class
 		template <typename T>
 		class Quaternion {
@@ -107,6 +115,12 @@ namespace pb {
 			template <typename T>
 			friend Quaternion<T> normalize(Quaternion<T> const & q);
 
+			template <typename T>
+			friend Quaternion<T> conjugate(Quaternion<T> const & q);
+
+			template <typename T>
+			friend Matrix<T, 3, 1> transformVectorByQuaternion(Quaternion<T> const & q, Matrix<T, 3, 1> const & v);
+
 		private:
 			// Real part
 			T real;
@@ -170,8 +184,9 @@ namespace pb {
 
 		// Create Quaternion from angle and axis
 		template <typename T>
-		Quaternion<T> quaternionFromAngleAxis(T const & angle, vec3f const & axis) {
-			return Quaternion<T>(cos(degToRad(angle / 2.0)), normalize(axis) * sin(degToRad(angle / 2.0)));
+		Quaternion<T> quaternionFromAngleAxis(T const & angle, Matrix<T, 3, 1> const & axis) {
+			return Quaternion<T>(static_cast<float>(cos(degToRad(angle / 2.0))),
+								 static_cast<float>(sin(degToRad(angle / 2.0))) * axis);
 		}
 
 		template <typename T>
@@ -184,6 +199,21 @@ namespace pb {
 			T norm = norm(q);
 
 			return Quaternion<T>(q.real / norm, q.immaginary / norm);
+		}
+
+		template <typename T>
+		Quaternion<T> conjugate(Quaternion<T> const & q) {
+			return Quaternion<T>(q.real, -q.immaginary);
+		}
+
+		template <typename T>
+		Matrix<T, 3, 1> transformVectorByQuaternion(Quaternion<T> const & q, Matrix<T, 3, 1> const & v) {
+			// Transform vector into quaternion
+			Quaternion<T> v_as_quaternion = Quaternion<T>(0.0, v);
+			// Transform
+			Quaternion<T> result = q * v_as_quaternion * conjugate(q);
+
+			return result.immaginary;
 		}
 
 	} // math namespace

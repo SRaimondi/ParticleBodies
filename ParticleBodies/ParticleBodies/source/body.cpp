@@ -53,15 +53,15 @@ namespace pb {
 						// Check if we are entering
 						if (entering) {
 							// Check if intersection is before half
-							if (t >= 0.5f) {
+							if (t <= 0.5f) {
 								// Add particle
 								body_particles.push_back(Particle((ray_start + 0.5f * voxel_x_dir) - center_of_mass, particle_diameter / 2.f));
 							}
 							// Set we are now inside the object
 							inside_object = true;
 						} else {
-							// We are exiting the object, check if intersection is before half
-							if (t <= 0.5f) {
+							// We are exiting the object, check if intersection is after half
+							if (t >= 0.5f) {
 								// Add particle
 								body_particles.push_back(Particle((ray_start + 0.5f * voxel_x_dir) - center_of_mass, particle_diameter / 2.f));
 							}
