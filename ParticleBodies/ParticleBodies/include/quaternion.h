@@ -208,12 +208,8 @@ namespace pb {
 
 		template <typename T>
 		Matrix<T, 3, 1> transformVectorByQuaternion(Quaternion<T> const & q, Matrix<T, 3, 1> const & v) {
-			// Transform vector into quaternion
-			Quaternion<T> v_as_quaternion = Quaternion<T>(0.0, v);
-			// Transform
-			Quaternion<T> result = q * v_as_quaternion * conjugate(q);
-
-			return result.immaginary;
+			// Transform v as quaternion by q * v * q_conjuvate
+			return (q * Quaternion<T>(0.0, v) * conjugate(q)).immaginary;
 		}
 
 	} // math namespace
