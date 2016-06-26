@@ -30,11 +30,6 @@ namespace pb {
 		math::vec3f const box_min = min - (offset * 0.5f);
 		math::vec3f const box_max = max + (offset * 0.5f);
 
-		// Compute voxel half dims
-		math::vec3f const voxel_half_dim = math::vec3f({ particle_diameter / 2.f,
-													   particle_diameter / 2.f,
-													   particle_diameter / 2.f });
-
 		// Voxel directional vector
 		math::vec3f const voxel_x_dir = math::vec3f({ particle_diameter, 0.f, 0.f });
 		math::vec3f const voxel_y_dir = math::vec3f({ 0.f, particle_diameter, 0.f });
@@ -77,6 +72,7 @@ namespace pb {
 						// Add particle
 						body_particles.push_back(Particle((ray_start + 0.5f * voxel_x_dir) - center_of_mass, particle_diameter / 2.f));
 					}
+					// Go to next voxel
 				}
 			}
 		}
