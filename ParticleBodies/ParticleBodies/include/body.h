@@ -19,7 +19,7 @@ namespace pb {
 		virtual ~Body();
 
 		// This method is called before the simulation to generate the particle approximation for each object
-		void generateBodyParticles(float const particle_size);
+		void generateBodyParticles(float const particle_diameter);
 
 	protected:
 		// Generate BBOX of the object
@@ -27,7 +27,7 @@ namespace pb {
 
 		// Intersect a ray with the object, tells if the intersection is an entering or exiting from the object
 		virtual bool intersect(math::vec3f const & start, math::vec3f const & direction,
-							   float const tmin, float const tmax,
+							   float const tmin, float const tmax, float * t,
 							   bool * entering) const = 0;
 
 		// Center of mass of the body
