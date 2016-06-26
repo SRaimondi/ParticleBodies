@@ -28,6 +28,9 @@
     <Filter Include="Header Files\body">
       <UniqueIdentifier>{07c5715e-1424-40e8-9716-2a25d0678cfe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\body">
+      <UniqueIdentifier>{0473b7f3-c065-432e-b912-bd28ffd3ba47}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\math_utilities.h">
@@ -75,7 +78,7 @@
       <Filter>Source Files\particle</Filter>
     </ClCompile>
     <ClCompile Include="source\body.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\body</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
