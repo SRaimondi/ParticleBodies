@@ -11,6 +11,7 @@
 /* Define function prototypes */
 static void error_callback(int error, const char* description);
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void scrollCallback(GLFWwindow* window, double x, double y);
 void update_view(GLFWwindow*, glm::vec3 const &);
 void resize(GLFWwindow* window);
 
@@ -26,7 +27,7 @@ int main(void) {
 	GLenum err;
 
 	r = 5.f;
-	phi = M_PI;
+	phi = M_PI / 4.f;
 	tao = M_PI / 4.f;
 
 	if (!glfwInit()) {
@@ -73,14 +74,25 @@ int main(void) {
 
 	glfwSetErrorCallback(error_callback);
 	glfwSetKeyCallback(window, keyCallback);
+	glfwSetScrollCallback(window, scrollCallback);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	glClearColor(0.f, 0.f, 0.f, 1.f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
+	/* Enable lighting */
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+
+	glEnable(GL_COLOR_MATERIAL);
+
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
+
+	// Create sphere
+	pb::Sphere sphere = pb::Sphere(pb::math::vec3f({ 0.f, 0.f, 0.f }), 1.f);
+	sphere.generateBodyParticles(0.1f);
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window)) {
@@ -91,6 +103,11 @@ int main(void) {
 
 		// Call resize function
 		resize(window);
+
+		update_view(window, glm::vec3(0.f, 0.f, 0.f));
+
+		// Draw particles
+		sphere.drawAllParticles();
 
 		// Swap front and back buffers
 		glfwSwapBuffers(window);
@@ -109,6 +126,16 @@ static void error_callback(int error, const char* description) {
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, GL_TRUE);
+	}
+}
+
+void scrollCallback(GLFWwindow* window, double x, double y) {
+	if (y < 0) {
+		r += 1.f;
+	} else if (y > 0) {
+		if (r > 3.f) {
+			r -= 1.f;
+		}
 	}
 }
 
@@ -174,8 +201,12 @@ void update_view(GLFWwindow* window, glm::vec3 const & look_at) {
 
 	M = glm::lookAt(cam_pos, look_at, glm::vec3(0.f, 1.f, 0.f));
 
+	// Compute light position
+	GLfloat lightpos0[] = { look_at.x, look_at.y + 10.f, look_at.z, 1.f };
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	glLightfv(GL_LIGHT0, GL_POSITION, lightpos0);
 	glMultMatrixf(&M[0][0]);
 }
 

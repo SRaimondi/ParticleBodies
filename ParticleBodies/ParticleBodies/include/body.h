@@ -21,6 +21,9 @@ namespace pb {
 		// This method is called before the simulation to generate the particle approximation for each object
 		void generateBodyParticles(float const particle_diameter);
 
+		// DEBUG METHOD
+		void drawAllParticles() const;
+
 	protected:
 		// Generate BBOX of the object
 		virtual void generateBBOX(math::vec3f * min, math::vec3f * max) const = 0;
@@ -36,6 +39,9 @@ namespace pb {
 		// List of particles belonging to the body, position of the particles is with respect
 		// to the body center of mass
 		std::vector<Particle> body_particles;
+
+		// DEBUG particle draw buffer
+		unsigned int v_buff, i_buff;
 	};
 
 } // pb namespace

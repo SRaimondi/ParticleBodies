@@ -19,6 +19,9 @@ namespace pb {
 		// Check if particle collides with another one
 		bool colliding(Particle const & other) const;
 
+		// DEBUG friend declaration
+		friend class Body;
+
 	protected:
 		// Particle position
 		pb::math::vec3f position;

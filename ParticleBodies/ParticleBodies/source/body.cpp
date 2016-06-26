@@ -1,4 +1,5 @@
 #include "body.h"
+#include "sphere_graphics.h"
 
 namespace pb {
 
@@ -6,7 +7,10 @@ namespace pb {
 		: center_of_mass(), body_particles() {}
 
 	Body::Body(math::vec3f const & cm)
-		: center_of_mass(cm), body_particles() {}
+		: center_of_mass(cm), body_particles() {
+		// Generate graphics
+		SphereGraphic::createSphereGraphic(20, 20, &v_buff, &i_buff);
+	}
 
 	Body::~Body() {}
 
@@ -42,8 +46,9 @@ namespace pb {
 			for (size_t voxel_z = 0; voxel_z < part_z; voxel_z++) {
 				for (size_t voxel_x = 0; voxel_x < part_x; voxel_x++) {
 					// Compute ray start
-					math::vec3f const ray_start = box_min + static_cast<float>(voxel_x) * voxel_x_dir
-						+ static_cast<float>(voxel_y) * 0.5f * voxel_y_dir + static_cast<float>(voxel_z) * 0.5f * voxel_z_dir;
+					math::vec3f const ray_start = box_min + static_cast<float>(voxel_x) * voxel_x_dir +
+						(static_cast<float>(voxel_y) + 0.5f) * voxel_y_dir 
+						+ (static_cast<float>(voxel_z) + 0.5f) * voxel_z_dir;
 
 					// Check intersection with object
 					bool entering = false;
@@ -71,6 +76,46 @@ namespace pb {
 				}
 			}
 		}
+	}
+
+	void Body::drawAllParticles() const {
+		// Set matrix mode to model view
+		glMatrixMode(GL_MODELVIEW);
+
+		// Translate to center of mass
+		glPushMatrix();
+		glTranslatef(center_of_mass(0), center_of_mass(1), center_of_mass(2));
+
+		// Use list of particles to draw them
+		for (auto p = body_particles.begin(); p != body_particles.end(); p++) {
+			// Translate to particle position
+			glPushMatrix();
+			glTranslatef(p->position(0), p->position(1), p->position(2));
+			glScalef(p->radius, p->radius, p->radius);
+			// Draw sphere
+
+			// Draw body
+			glColor3f(1.f, 1.f, 1.f);
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glEnableClientState(GL_NORMAL_ARRAY);
+			glBindBuffer(GL_ARRAY_BUFFER, v_buff);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, i_buff);
+			glVertexPointer(3, GL_FLOAT, 6 * sizeof(GLfloat), (GLvoid*)0);
+			glNormalPointer(GL_FLOAT, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+			//glPolygonMode(GL_FRONT, GL_LINE);
+			glDrawElements(GL_QUADS, 20 * 20 * 4, GL_UNSIGNED_SHORT, (GLvoid*)0);
+
+			// Pop matrix form stack
+			glPopMatrix();
+
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+			glDisableClientState(GL_VERTEX_ARRAY);
+			glDisableClientState(GL_NORMAL_ARRAY);
+		}
+
+		glPopMatrix();
 	}
 
 } // pb namespace

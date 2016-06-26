@@ -128,6 +128,7 @@
     <ClInclude Include="include\quaternion.h" />
     <ClInclude Include="include\scalar.h" />
     <ClInclude Include="include\sphere.h" />
+    <ClInclude Include="include\sphere_graphics.h" />
     <ClInclude Include="include\traits.h" />
   </ItemGroup>
   <ItemGroup>
@@ -135,6 +136,7 @@
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\particle.cpp" />
     <ClCompile Include="source\sphere.cpp" />
+    <ClCompile Include="source\sphere_graphics.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
