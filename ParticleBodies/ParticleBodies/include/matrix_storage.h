@@ -13,6 +13,11 @@ namespace pb {
 			// Constructors
 			explicit MatrixStorage() {
 				e = new T[ROWS * COLS];
+
+				// Set all values to zero
+				for (size_t i = 0; i < ROWS * COLS; i++) {
+					e[i] = T(0);
+				}
 			}
 
 			MatrixStorage(std::initializer_list<std::initializer_list<T> > const & args) {
