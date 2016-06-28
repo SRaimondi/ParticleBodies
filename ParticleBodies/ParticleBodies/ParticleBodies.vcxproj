@@ -127,16 +127,19 @@
     <ClInclude Include="include\matrix_operators.h" />
     <ClInclude Include="include\matrix_storage.h" />
     <ClInclude Include="include\particle.h" />
+    <ClInclude Include="include\physical_properties.h" />
     <ClInclude Include="include\quaternion.h" />
     <ClInclude Include="include\scalar.h" />
     <ClInclude Include="include\sphere.h" />
     <ClInclude Include="include\sphere_graphics.h" />
     <ClInclude Include="include\traits.h" />
+    <ClInclude Include="include\voxel_grid.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\body.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\particle.cpp" />
+    <ClCompile Include="source\physical_properties.cpp" />
     <ClCompile Include="source\sphere.cpp" />
     <ClCompile Include="source\sphere_graphics.cpp" />
   </ItemGroup>

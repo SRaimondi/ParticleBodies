@@ -34,6 +34,9 @@
     <Filter Include="Header Files\graphics">
       <UniqueIdentifier>{e3f2f665-0d37-4b08-9785-d9e6569ab0ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\voxel grid">
+      <UniqueIdentifier>{022e7e25-9b4a-4fe7-aee6-eaaefb9b55de}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\math_utilities.h">
@@ -78,6 +81,12 @@
     <ClInclude Include="include\sphere_graphics.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="include\voxel_grid.h">
+      <Filter>Header Files\voxel grid</Filter>
+    </ClInclude>
+    <ClInclude Include="include\physical_properties.h">
+      <Filter>Header Files\body</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -94,6 +103,9 @@
     </ClCompile>
     <ClCompile Include="source\sphere_graphics.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\physical_properties.cpp">
+      <Filter>Source Files\body</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

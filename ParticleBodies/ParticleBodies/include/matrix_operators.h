@@ -136,6 +136,14 @@ namespace pb {
 				(OPMatrixMult<T, Scalar<T>, EXPR>(Scalar<T>(s), e.expr())));
 		}
 
+		// Matrix - Scalar division
+		template <typename T, size_t ROWS, size_t COLS, typename EXPR>
+		Matrix<T, ROWS, COLS, OPMatrixMult<T, Scalar<T>, EXPR> >
+			operator/ (Matrix<T, ROWS, COLS, EXPR> const & e, T const & s) {
+			return (Matrix<T, ROWS, COLS, OPMatrixMult<T, Scalar<T>, EXPR> >
+				(OPMatrixMult<T, Scalar<T>, EXPR>(Scalar<T>(T(1) / s), e.expr())));
+		}
+
 		// Matrix - matrix multiplication
 		template <typename T, size_t ROWS, size_t SIZE, size_t COLS, typename EXPR1, typename EXPR2>
 		Matrix<T, ROWS, COLS, OPMatrixMult<T, EXPR1, EXPR2, SIZE> >

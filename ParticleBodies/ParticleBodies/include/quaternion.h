@@ -96,6 +96,24 @@ namespace pb {
 				return Quaternion(real - other.real, immaginary - other.immaginary);
 			}
 
+			// Get real part
+			T const & getReal() const {
+				return real;
+			}
+
+			T & getReal() {
+				return real;
+			}
+
+			// Get immaginary part
+			Matrix<T, 3, 1> const & getImmaginary() const {
+				return immaginary;
+			}
+
+			Matrix<T, 3, 1> & getImmaginary() {
+				return immaginary;
+			}
+
 			// Friend functions
 			template <typename T>
 			friend T magnitude(Quaternion<T> const & q);

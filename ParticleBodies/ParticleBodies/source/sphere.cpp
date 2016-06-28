@@ -57,9 +57,11 @@ namespace pb {
 		return true;
 	}
 
-	bool Sphere::voxelInside(math::vec3f const & voxel_center, float const ) const {
+	bool Sphere::voxelInside(math::vec3f const & voxel_center, float const voxel_side) const {
+		// Compute distance
+		float distance = math::magnitude(voxel_center - center_of_mass);
 		// Check if distance between center and voxel center is less than radius
-		return (math::magnitude(voxel_center - center_of_mass) < radius);
+		return (distance < radius);
 	}
 
 } // pb namespace

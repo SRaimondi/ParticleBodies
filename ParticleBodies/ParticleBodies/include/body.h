@@ -2,6 +2,7 @@
 
 // Includes
 #include "particle.h"
+#include "voxel_grid.h"
 #include <vector>
 
 // Define small BBOX tollerance
@@ -24,20 +25,18 @@ namespace pb {
 		// This method is called before the simulation to generate the particle approximation for each object
 		void generateBodyParticles(float const particle_diameter);
 
+		// Generate BBOX of the body
+		virtual void generateBBOX(math::vec3f * min, math::vec3f * max) const = 0;
+
 		// DEBUG METHOD
 		void drawAllParticles() const;
 
 	protected:
-		// Generate BBOX of the object
-		virtual void generateBBOX(math::vec3f * min, math::vec3f * max) const = 0;
+		// Generate grid minimum and maximum for the grid
+		void generateGridMinMax(math::vec3f * grid_min, math::vec3f * grid_max, float const particle_diameter) const;
 
-		// Intersect a ray with the object, tells if the intersection is an entering or exiting from the object
-		virtual bool intersect(math::vec3f const & start, math::vec3f const & direction,
-							   float const tmin, float const tmax,
-							   bool * entering) const = 0;
-
-		// Check if voxel is inside the body
-		virtual bool voxelInside(math::vec3f const & voxel_center, float const voxel_side) const = 0;
+		// Generate VoxelGrid from object
+		virtual VoxelGrid<bool> generateVoxelGrid() const = 0;
 
 		// Center of mass of the body
 		math::vec3f center_of_mass;

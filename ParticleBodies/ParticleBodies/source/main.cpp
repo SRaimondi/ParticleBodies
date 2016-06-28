@@ -90,8 +90,8 @@ int main(void) {
 	glCullFace(GL_BACK);
 
 	// Create sphere
-	pb::Sphere sphere = pb::Sphere(pb::math::vec3f({ 0.f, 0.f, 0.f }), 1.f);
-	sphere.generateBodyParticles(0.08f);
+	//pb::Sphere sphere = pb::Sphere(pb::math::vec3f({ 0.f, 0.f, 0.f }), 1.f);
+	//sphere.generateBodyParticles(0.05f);
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window)) {
@@ -106,7 +106,7 @@ int main(void) {
 		update_view(window, glm::vec3(0.f, 0.f, 0.f));
 
 		// Draw particles
-		sphere.drawAllParticles();
+		//sphere.drawAllParticles();
 
 		// Swap front and back buffers
 		glfwSwapBuffers(window);

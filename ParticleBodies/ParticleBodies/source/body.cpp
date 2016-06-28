@@ -9,7 +9,7 @@ namespace pb {
 	Body::Body(math::vec3f const & cm)
 		: center_of_mass(cm), body_particles() {
 		// Generate graphics
-		SphereGraphic::createSphereGraphic(20, 20, &v_buff, &i_buff);
+		SphereGraphic::createSphereGraphic(10, 10, &v_buff, &i_buff);
 	}
 
 	Body::~Body() {}
@@ -17,7 +17,7 @@ namespace pb {
 	void Body::generateBodyParticles(float const particle_diameter) {
 		// Generate BBOX data of the object
 		math::vec3f min, max;
-		generateBBOX(&min, &max);
+		// generateBBOX(&min, &max);
 		// Compute BBOX dims
 		math::vec3f dim = max - min;
 		// Find how many particle's boxes we have in each direction
@@ -34,6 +34,9 @@ namespace pb {
 		math::vec3f const box_min = min - (0.5f * offset);
 		math::vec3f const box_max = max + (0.5f * offset);
 
+		// Create voxel grid
+		VoxelGrid<bool> grid = generateVoxelGrid();
+
 		// Voxel directional vector
 		math::vec3f const voxel_x_dir = math::vec3f({ particle_diameter, 0.f, 0.f });
 		math::vec3f const voxel_y_dir = math::vec3f({ 0.f, particle_diameter, 0.f });
@@ -42,52 +45,18 @@ namespace pb {
 		// Keep track if we are inside the object
 		bool inside_object = false;
 		// Loop over all voxels and add particle if voxel center is inside the object
-		for (size_t voxel_y = 0; voxel_y < part_y; voxel_y++) {
-			for (size_t voxel_z = 0; voxel_z < part_z; voxel_z++) {
-				for (size_t voxel_x = 0; voxel_x < part_x; voxel_x++) {
-					// Compute ray start
-					//math::vec3f const ray_start = box_min + 
-					//	(static_cast<float>(voxel_x) - EPS) * voxel_x_dir +
-					//	(static_cast<float>(voxel_y) + 0.5f) * voxel_y_dir +
-					//	(static_cast<float>(voxel_z) + 0.5f) * voxel_z_dir;
-
-					//// Check intersection with object
-					//bool entering = false;
-					//// Check if we intersect the object
-					//if (intersect(ray_start, math::normalize(voxel_x_dir), 0.f, particle_diameter, &entering)) {
-					//	// Check if we are entering
-					//	if (entering) {
-					//		// Add particle
-					//		body_particles.push_back(Particle((ray_start + 0.5f * voxel_x_dir) - center_of_mass, particle_diameter / 2.f));
-					//		// Set we are now inside the object
-					//		inside_object = true;
-					//	} else {
-					//		// Add particle
-					//		body_particles.push_back(Particle((ray_start + 0.5f * voxel_x_dir) - center_of_mass, particle_diameter / 2.f));
-					//		// Set we are going out of the object
-					//		inside_object = false;
-					//	}
-
-					//// Check if we are already inside the object so we need to add a particle
-					//} else if (inside_object) {
-					//	// Add particle
-					//	body_particles.push_back(Particle((ray_start + 0.5f * voxel_x_dir) - center_of_mass, particle_diameter / 2.f));
-					//}
-					// Go to next voxel
-
-					// Compute voxel center
-					math::vec3f const voxel_center = box_min + 
-						(static_cast<float>(voxel_x) + 0.5f) * voxel_x_dir +
-						(static_cast<float>(voxel_y) + 0.5f) * voxel_y_dir +
-						(static_cast<float>(voxel_z) + 0.5f) * voxel_z_dir;
-
-					// Check if voxel is inside
-					if (voxelInside(voxel_center, particle_diameter)) {
-						body_particles.push_back(Particle(voxel_center - center_of_mass, particle_diameter / 2.f));
-					}
-				}
-			}
-		}
+		//for (size_t voxel_y = 0; voxel_y < part_y; voxel_y++) {
+		//	for (size_t voxel_z = 0; voxel_z < part_z; voxel_z++) {
+		//		for (size_t voxel_x = 0; voxel_x < part_x; voxel_x++) {
+		//			// Get voxel center
+		//			math::vec3f voxel_center = grid.getVoxelCenter(voxel_x, voxel_y, voxel_z);
+		//			// Check if voxel is inside
+		//			if (voxelInside(voxel_center, particle_diameter)) {
+		//				body_particles.push_back(Particle(voxel_center - center_of_mass, particle_diameter / 2.f));
+		//			}
+		//		}
+		//	}
+		//}
 	}
 
 	void Body::drawAllParticles() const {
@@ -127,6 +96,27 @@ namespace pb {
 		}
 
 		glPopMatrix();
+	}
+
+	void Body::generateGridMinMax(math::vec3f * grid_min, math::vec3f * grid_max, float const particle_diameter) const {
+		// Generate BBOX data of the object
+		math::vec3f min, max;
+		generateBBOX(&min, &max);
+		// Compute BBOX dims
+		math::vec3f dim = max - min;
+		// Find how many particle's boxes we have in each direction
+		size_t const part_x = static_cast<size_t>(ceil(dim(0) / particle_diameter));
+		size_t const part_y = static_cast<size_t>(ceil(dim(1) / particle_diameter));
+		size_t const part_z = static_cast<size_t>(ceil(dim(2) / particle_diameter));
+		// Check how much we are outside of the BBOX limits
+		math::vec3f offset = math::vec3f({ part_x * particle_diameter,
+										 part_y  * particle_diameter,
+										 part_z * particle_diameter });
+		// Subtract BBOX dimensions
+		offset = offset - dim;
+		// Compute grid minimum and maximum
+		math::vec3f const box_min = min - (0.5f * offset);
+		math::vec3f const box_max = max + (0.5f * offset);
 	}
 
 } // pb namespace

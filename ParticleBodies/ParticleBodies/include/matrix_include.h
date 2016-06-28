@@ -11,6 +11,9 @@ namespace pb {
 		typedef Matrix<float, 4, 4> mat4x4f;
 		typedef Matrix<double, 4, 4> mat4x4d;
 
+		typedef Matrix<float, 3, 3> mat3x3f;
+		typedef Matrix<double, 3, 3> mat3x3d;
+
 		typedef Matrix<float, 4, 1> vec4f;
 		typedef Matrix<double, 4, 1> vec4d;
 
