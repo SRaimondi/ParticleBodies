@@ -80,7 +80,7 @@ namespace pb {
 		};
 
 		// Specialization for single dimension vector
-		template <typename T, size_t ROWS, typename EXPR >
+		template <typename T, size_t ROWS, typename EXPR>
 		class Matrix<T, ROWS, 1, EXPR> {
 		public:
 			// Empty Matrix

@@ -119,6 +119,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\body.h" />
+    <ClInclude Include="include\body_particles.h" />
     <ClInclude Include="include\constants.h" />
     <ClInclude Include="include\math_utilities.h" />
     <ClInclude Include="include\matrix.h" />
@@ -137,6 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\body.cpp" />
+    <ClCompile Include="source\body_particles.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\particle.cpp" />
     <ClCompile Include="source\physical_properties.cpp" />

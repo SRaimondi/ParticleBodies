@@ -2,6 +2,7 @@
 
 // Includes
 #include "matrix_include.h"
+#include <vector>
 
 namespace pb {
 
@@ -24,6 +25,19 @@ namespace pb {
 		// Get voxel center
 		math::vec3f getVoxelCenter(size_t const x, size_t const y, size_t const z) const;
 
+		// Get voxel grid dimensions
+		size_t getGridDimX() const;
+		size_t getGridDimY() const;
+		size_t getGridDimZ() const;
+
+		// Get iterator to first voxel
+		typename std::vector<ELEMENT>::iterator voxelsBegin();
+		typename std::vector<ELEMENT>::const_iterator voxelsBegin() const;
+
+		// Get iterator to last voxel
+		typename std::vector<ELEMENT>::iterator voxelsEnd();
+		typename std::vector<ELEMENT>::const_iterator voxelsEnd() const;
+
 	protected:
 		// Voxel grid dimensions
 		size_t const x_dim;
@@ -37,7 +51,7 @@ namespace pb {
 		float const voxel_y;
 		float const voxel_z;
 		// Value in each voxel
-		ELEMENT * voxels_content;
+		std::vector<ELEMENT> voxels_content;
 	};
 
 	// VoxelGrid class methods implementation
@@ -45,18 +59,17 @@ namespace pb {
 	VoxelGrid<ELEMENT>::VoxelGrid(size_t const x_dim, size_t const y_dim, size_t const z_dim,
 								  math::vec3f const & grid_min, math::vec3f const & grid_max)
 		: x_dim(x_dim), y_dim(y_dim), z_dim(z_dim),
-		grid_min(grid_min), grid_max(grid_max) {
-		// Allocate memory for content
-		voxels_content = new ELEMENT[x_dim * y_dim * z_dim];
-		// Compute voxels dimensions
-		voxel_x = (grid_max(0) - grid_min(0)) / static_cast<float>(x_dim);
-		voxel_y = (grid_max(1) - grid_min(1)) / static_cast<float>(y_dim);
-		voxel_z = (grid_max(2) - grid_min(2)) / static_cast<float>(z_dim);
+		grid_min(grid_min), grid_max(grid_max),
+		voxel_x((grid_max(0) - grid_min(0)) / static_cast<float>(x_dim)),
+		voxel_y((grid_max(1) - grid_min(1)) / static_cast<float>(y_dim)),
+		voxel_z((grid_max(2) - grid_min(2)) / static_cast<float>(z_dim)) {
+		// Resize vector to old all voxels information
+		voxels_content.resize(x_dim * y_dim * z_dim);
 	}
 
 	template <typename ELEMENT>
 	VoxelGrid<ELEMENT>::~VoxelGrid() {
-		delete[] voxels_content;
+		//delete[] voxels_content;
 	}
 
 	template <typename ELEMENT>
@@ -94,6 +107,41 @@ namespace pb {
 		return (grid_min + (x + 0.5f) * voxel_x * math::vec3f({ 1.f, 0.f, 0.f }) +
 			(y + 0.5f) * voxel_y * math::vec3f({ 0.f, 1.f, 0.f })) +
 			(z + 0.5f) * voxel_z * math::vec3f({ 0.f, 0.f, 1.f });
+	}
+
+	template <typename ELEMENT>
+	size_t VoxelGrid<ELEMENT>::getGridDimX() const {
+		return x_dim;
+	}
+
+	template <typename ELEMENT>
+	size_t VoxelGrid<ELEMENT>::getGridDimY() const {
+		return y_dim;
+	}
+
+	template <typename ELEMENT>
+	size_t VoxelGrid<ELEMENT>::getGridDimZ() const {
+		return z_dim;
+	}
+
+	template <typename ELEMENT>
+	typename std::vector<ELEMENT>::iterator VoxelGrid<ELEMENT>::voxelsBegin() {
+		return voxels_content.begin();
+	}
+
+	template <typename ELEMENT>
+	typename std::vector<ELEMENT>::const_iterator VoxelGrid<ELEMENT>::voxelsBegin() const {
+		return voxels_content.begin();
+	}
+
+	template <typename ELEMENT>
+	typename std::vector<ELEMENT>::iterator VoxelGrid<ELEMENT>::voxelsEnd() {
+		return voxels_content.end();
+	}
+
+	template <typename ELEMENT>
+	typename std::vector<ELEMENT>::const_iterator VoxelGrid<ELEMENT>::voxelsEnd() const {
+		return voxels_content.end();
 	}
 
 } // pb namespace

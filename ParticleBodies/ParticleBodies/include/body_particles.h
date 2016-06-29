@@ -3,6 +3,7 @@
 #include "body.h"
 #include "particle.h"
 #include <vector>
+#include <GL\glew.h>
 
 namespace pb {
 
@@ -11,6 +12,11 @@ namespace pb {
 	public:
 		// Constructor
 		BodyParticlesDiscretisation(Body * const body, float const particle_diameter);
+
+		// Draw all particles
+		void drawParticles(GLuint const sphere_v_buff,
+						   GLuint const sphere_i_buff,
+						   GLuint const num_elements) const;
 
 	private:
 		// Generate body particles discretisation

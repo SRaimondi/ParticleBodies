@@ -12,7 +12,7 @@ namespace pb {
 	void BodyParticlesDiscretisation::generateParticles(float const particle_diameter) {
 		// Request to body BBOX 
 		math::vec3f min, max;
-		// generateBBOX(&min, &max);
+		body->generateBBOX(&min, &max);
 		// Compute BBOX dims
 		math::vec3f dim = max - min;
 		// Find how many particle's boxes we have in each direction
@@ -30,23 +30,81 @@ namespace pb {
 		math::vec3f const box_max = max + (0.5f * offset);
 
 		// Create voxel grid
-		VoxelGrid<bool> grid = VoxelGrid<bool>(part_x, part_y, part_z, box_min, box_max);
+		VoxelGrid<bool> voxel_grid = VoxelGrid<bool>(part_x, part_y, part_z, box_min, box_max);
 
 		// Loop over all voxels and set voxel to true if inside the object
 		for (size_t voxel_y = 0; voxel_y < part_y; voxel_y++) {
 			for (size_t voxel_z = 0; voxel_z < part_z; voxel_z++) {
 				for (size_t voxel_x = 0; voxel_x < part_x; voxel_x++) {
 					// Get voxel center
-					math::vec3f voxel_center = grid.getVoxelCenter(voxel_x, voxel_y, voxel_z);
+					math::vec3f voxel_center = voxel_grid.getVoxelCenter(voxel_x, voxel_y, voxel_z);
 					// Check if voxel is inside
 					if (body->pointInside(voxel_center)) {
-						grid.setElement(voxel_x, voxel_y, voxel_z, true);
+						voxel_grid.setElement(voxel_x, voxel_y, voxel_z, true);
 					} else {
-						grid.setElement(voxel_x, voxel_y, voxel_z, false);
+						voxel_grid.setElement(voxel_x, voxel_y, voxel_z, false);
 					}
 				}
 			}
 		}
+
+		// Voxel grid processing
+
+		// Loop over all voxels set to true and add particle at that point
+		for (size_t voxel_y = 0; voxel_y < part_y; voxel_y++) {
+			for (size_t voxel_z = 0; voxel_z < part_z; voxel_z++) {
+				for (size_t voxel_x = 0; voxel_x < part_x; voxel_x++) {
+					// Check if voxel is inside object
+					if (voxel_grid.getElement(voxel_x, voxel_y, voxel_z)) {
+						// Compute voxel center
+						math::vec3f voxel_center = voxel_grid.getVoxelCenter(voxel_x, voxel_y, voxel_z);
+						// Add particle
+						particles.push_back(Particle(voxel_center - body->getCenterOfMass(), particle_diameter / 2.f));
+					}
+				}
+			}
+		}
+	}
+
+	void BodyParticlesDiscretisation::drawParticles(GLuint const sphere_v_buff,
+													GLuint const sphere_i_buff,
+													GLuint const num_elements) const {
+		// Set matrix mode to model view
+		glMatrixMode(GL_MODELVIEW);
+
+		// Translate to center of mass
+		glPushMatrix();
+		glTranslatef(body->getCenterOfMass()(0), body->getCenterOfMass()(1), body->getCenterOfMass()(2));
+
+		// Use list of particles to draw them
+		for (auto p = particles.begin(); p != particles.end(); p++) {
+			// Translate to particle position, wrt. center of mass
+			glPushMatrix();
+			glTranslatef(p->position(0), p->position(1), p->position(2));
+			glScalef(p->radius, p->radius, p->radius);
+
+			// Draw particle
+			glColor3f(1.f, 1.f, 1.f);
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glEnableClientState(GL_NORMAL_ARRAY);
+			glBindBuffer(GL_ARRAY_BUFFER, sphere_v_buff);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphere_i_buff);
+			glVertexPointer(3, GL_FLOAT, 6 * sizeof(GLfloat), (GLvoid*)0);
+			glNormalPointer(GL_FLOAT, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+			// glPolygonMode(GL_FRONT, GL_LINE);
+			glDrawElements(GL_TRIANGLES, num_elements, GL_UNSIGNED_SHORT, (GLvoid*)0);
+
+			// Pop matrix form stack
+			glPopMatrix();
+
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+			glDisableClientState(GL_VERTEX_ARRAY);
+			glDisableClientState(GL_NORMAL_ARRAY);
+		}
+
+		glPopMatrix();
 	}
 
 } // pb namespace

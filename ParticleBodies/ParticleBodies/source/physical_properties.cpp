@@ -2,7 +2,7 @@
 
 namespace pb {
 
-	void stateToArray(RigidBody const * const rb, float * y) {
+	void stateToArray(PhysicalProperties const * const rb, float * y) {
 		// Copy position
 		*y++ = rb->x(0);
 		*y++ = rb->x(1);
@@ -25,7 +25,7 @@ namespace pb {
 		*y = rb->L(2);
 	}
 
-	void arrayToState(RigidBody * const rb, float const * y) {
+	void arrayToState(PhysicalProperties * const rb, float const * y) {
 		// Copy position
 		rb->x(0) = *y++;
 		rb->x(1) = *y++;
@@ -60,7 +60,7 @@ namespace pb {
 		rb->omega = rb->inv_inertia_tensor * rb->L;
 	}
 
-	void ddtStateToArray(RigidBody const * const rb, float * y_dot) {
+	void ddtStateToArray(PhysicalProperties const * const rb, float * y_dot) {
 		// Copy velocity
 		*y_dot++ = rb->v(0);
 		*y_dot++ = rb->v(1);

@@ -9,7 +9,8 @@ namespace pb {
 	class SphereGraphic {
 	public:
 		static void createSphereGraphic(size_t const rings, size_t const sectors,
-										GLuint * vertex_buff, GLuint * index_buff);
+										GLuint * vertex_buff, GLuint * index_buff, 
+										GLuint * num_elements);
 	};
 
 } // pb namespace

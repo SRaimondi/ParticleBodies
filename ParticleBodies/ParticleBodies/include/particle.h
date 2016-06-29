@@ -19,8 +19,8 @@ namespace pb {
 		// Check if particle collides with another one
 		bool colliding(Particle const & other) const;
 
-		// DEBUG friend declaration
-		friend class Body;
+		// Friend declaration
+		friend class BodyParticlesDiscretisation;
 
 	protected:
 		// Particle position

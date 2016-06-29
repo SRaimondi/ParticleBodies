@@ -1,12 +1,8 @@
 #pragma once
 
 // Includes
-#include "particle.h"
-#include "voxel_grid.h"
+#include "physical_properties.h"
 #include <vector>
-
-// Define small BBOX tollerance
-#define EPS 10e-4f
 
 namespace pb {
 
@@ -31,8 +27,8 @@ namespace pb {
 		// Check if a point is inside the object
 		virtual bool pointInside(math::vec3f const & p) const = 0;
 
-		// DEBUG METHOD
-		void drawAllParticles() const;
+		// Get center of mass of thebody
+		math::vec3f const & getCenterOfMass() const;
 
 	protected:
 		// Generate grid minimum and maximum for the grid
@@ -45,8 +41,11 @@ namespace pb {
 		// to the body center of mass
 		//std::vector<Particle> body_particles;
 
+		// Body physical description
+		PhysicalProperties physical_properties;
+
 		// DEBUG particle draw buffer
-		unsigned int v_buff, i_buff;
+		// unsigned int v_buff, i_buff;
 	};
 
 } // pb namespace

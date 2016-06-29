@@ -2,6 +2,8 @@
 #define GLFW_NO_GLU 1
 #include <GLFW\glfw3.h>
 #include "sphere.h"
+#include "sphere_graphics.h"
+#include "body_particles.h"
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
@@ -49,7 +51,7 @@ int main(void) {
 	double window_width = mode->width;
 	double window_height = mode->height;
 
-	window = glfwCreateWindow(window_width, window_height, "Particle bodies", monitor, NULL);
+	window = glfwCreateWindow(800, 800, "Particle bodies", NULL, NULL);
 
 	if (!window) {
 		glfwTerminate();
@@ -89,9 +91,15 @@ int main(void) {
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
+	// Create buffers for sphere drawing
+	GLuint sphere_v_buff, sphere_i_buff, sphere_num_elements;
+	pb::SphereGraphic::createSphereGraphic(30, 30, &sphere_v_buff, &sphere_i_buff, &sphere_num_elements);
+
 	// Create sphere
-	//pb::Sphere sphere = pb::Sphere(pb::math::vec3f({ 0.f, 0.f, 0.f }), 1.f);
-	//sphere.generateBodyParticles(0.05f);
+	pb::Body * sphere = new pb::Sphere(pb::math::vec3f(), 1.f);
+
+	// Create sphere discretisation
+	pb::BodyParticlesDiscretisation sphere_discretisation = pb::BodyParticlesDiscretisation(sphere, 0.2f);
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window)) {
@@ -106,7 +114,7 @@ int main(void) {
 		update_view(window, glm::vec3(0.f, 0.f, 0.f));
 
 		// Draw particles
-		//sphere.drawAllParticles();
+		sphere_discretisation.drawParticles(sphere_v_buff, sphere_i_buff, sphere_num_elements);
 
 		// Swap front and back buffers
 		glfwSwapBuffers(window);
@@ -130,10 +138,10 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 void scrollCallback(GLFWwindow* window, double x, double y) {
 	if (y < 0) {
-		r += 1.f;
+		r += .5f;
 	} else if (y > 0) {
-		if (r > 3.f) {
-			r -= 1.f;
+		if (r > 2.f) {
+			r -= .5f;
 		}
 	}
 }
@@ -148,7 +156,7 @@ void resize(GLFWwindow* window) {
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glFrustum(-ratio, ratio, -1.f, 1.f, 1.f, 150.f);
+	glFrustum(-ratio, ratio, -1.f, 1.f, 0.5f, 10.f);
 	//glOrtho(-4.f, 4.f, -4.f, 4.f, 1.f, 10.f);
 }
 

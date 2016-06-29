@@ -7,7 +7,8 @@
 namespace pb {
 
 	void SphereGraphic::createSphereGraphic(size_t const rings, size_t const sectors,
-											GLuint * vertex_buff, GLuint * index_buff) {
+											GLuint * vertex_buff, GLuint * index_buff,
+											GLuint * num_elements) {
 		// Vertices and normals
 		std::vector<GLfloat> vertices_normals;
 		// Indices
@@ -43,14 +44,24 @@ namespace pb {
 			}
 		}
 
+		// Set number of element to draw
+		*num_elements = rings * sectors * 6;
 		// Create indices
-		indices.resize(rings * sectors * 4);
+		indices.resize(*num_elements);
 		auto i = indices.begin();
 		for (r = 0; r < rings - 1; r++) {
 			for (s = 0; s < sectors - 1; s++) {
 				// Insert indices
+				//*i++ = r * sectors + s;
+				//*i++ = r * sectors + (s + 1);
+				//*i++ = (r + 1) * sectors + (s + 1);
+				//*i++ = (r + 1) * sectors + s;
+				// Insert first triangle
 				*i++ = r * sectors + s;
 				*i++ = r * sectors + (s + 1);
+				*i++ = (r + 1) * sectors + (s + 1);
+				// Insert second triangle
+				*i++ = r * sectors + s;
 				*i++ = (r + 1) * sectors + (s + 1);
 				*i++ = (r + 1) * sectors + s;
 			}

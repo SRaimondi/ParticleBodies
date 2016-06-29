@@ -14,15 +14,10 @@ namespace pb {
 
 	protected:
 		// Generate BBOX of the object
-		void generateBBOX(math::vec3f * min, math::vec3f * max) const;
-
-		// Intersect a ray with the object, tells if the intersection is an entering or exiting from the object
-		bool intersect(math::vec3f const & start, math::vec3f const & direction,
-					   float const tmin, float const tmax,
-					   bool * entering) const;
+		void generateBBOX(math::vec3f * min, math::vec3f * max) const override;
 
 		// Check if voxel is inside the body
-		bool voxelInside(math::vec3f const & voxel_center, float const voxel_side) const;
+		bool pointInside(math::vec3f const & p) const override;
 
 	private:
 		// Sphere radius

@@ -7,7 +7,7 @@
 namespace pb {
 
 	// Define struct that holds the physical properties of a rigid body
-	struct RigidBody {
+	struct PhysicalProperties {
 		// Define size of state
 		static size_t const STATE_SIZE = 13;
 
@@ -54,12 +54,12 @@ namespace pb {
 	};
 
 	// Copy the state information into an array
-	void stateToArray(RigidBody const * const rb, float * y);
+	void stateToArray(PhysicalProperties const * const rb, float * y);
 
 	// Copy array into object state
-	void arrayToState(RigidBody * const rb, float const * y);
+	void arrayToState(PhysicalProperties * const rb, float const * y);
 
 	// State derivative to array
-	void ddtStateToArray(RigidBody const * const rb, float * y_dot);
+	void ddtStateToArray(PhysicalProperties const * const rb, float * y_dot);
 
 } // pb namespace
