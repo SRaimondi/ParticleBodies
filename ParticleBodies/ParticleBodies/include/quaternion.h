@@ -26,6 +26,10 @@ namespace pb {
 		template <typename T>
 		Matrix<T, 4, 4> createRotationMatrix(Quaternion<T> const & q);
 
+		// Create rotation matrix 3x3
+		template <typename T>
+		Matrix<T, 3, 3> createMatrix(Quaternion<T> const & q);
+
 		// Norm of the quaterion
 		template <typename T>
 		T norm(Quaternion<T> const & q);
@@ -128,6 +132,9 @@ namespace pb {
 			friend Matrix<T, 4, 4> createRotationMatrix(Quaternion<T> const & q);
 
 			template <typename T>
+			friend Matrix<T, 3, 3> createMatrix(Quaternion<T> const & q);
+
+			template <typename T>
 			friend T norm(Quaternion<T> const & q);
 
 			template <typename T>
@@ -181,11 +188,11 @@ namespace pb {
 			// Second row
 			result(1, 0) = 2.0 * x * y + 2.0 * s * z;
 			result(1, 1) = 1.0 - 2.0 * x * x - 2.0 * z * z;
-			result(1, 2) = 2.0 * y * z + 2.0 * s * x;
+			result(1, 2) = 2.0 * y * z - 2.0 * s * x;
 			result(1, 3) = 0.0;
 
 			// Third row
-			result(2, 0) = 2.0 * x * y + 2.0 * s * z;
+			result(2, 0) = 2.0 * x * z - 2.0 * s * y;
 			result(2, 1) = 2.0 * y * z + 2.0 * s * x;
 			result(2, 2) = 1.0 - 2.0 * x * x - 2.0 * y * y;
 			result(2, 3) = 0.0;
@@ -196,6 +203,34 @@ namespace pb {
 			result(3, 1) = 0.0;
 			result(3, 2) = 0.0;
 			result(3, 3) = 1.0;
+
+			return result;
+		}
+
+		template <typename T>
+		Matrix<T, 3, 3> createMatrix(Quaternion<T> const & q) {
+			Matrix<T, 3, 3> result;
+
+			T s = q.real;
+			T x = q.immaginary(0);
+			T y = q.immaginary(1);
+			T z = q.immaginary(2);
+
+			// Assign matrix entries
+			// First row
+			result(0, 0) = 1.0 - 2.0 * y * y - 2.0 * z * z;
+			result(0, 1) = 2.0 * x * y - 2.0 * s * z;
+			result(0, 2) = 2.0 * x * z + 2.0 * s * y;
+
+			// Second row
+			result(1, 0) = 2.0 * x * y + 2.0 * s * z;
+			result(1, 1) = 1.0 - 2.0 * x * x - 2.0 * z * z;
+			result(1, 2) = 2.0 * y * z - 2.0 * s * x;
+
+			// Third row
+			result(2, 0) = 2.0 * x * z - 2.0 * s * y;
+			result(2, 1) = 2.0 * y * z + 2.0 * s * x;
+			result(2, 2) = 1.0 - 2.0 * x * x - 2.0 * y * y;
 
 			return result;
 		}
@@ -229,6 +264,10 @@ namespace pb {
 			// Transform v as quaternion by q * v * q_conjuvate
 			return (q * Quaternion<T>(0.0, v) * conjugate(q)).immaginary;
 		}
+
+		// Define quaternion types
+		typedef Quaternion<float> quaternionf;
+		typedef Quaternion<double> quaterniond;
 
 	} // math namespace
 } // pb namespace

@@ -8,12 +8,38 @@ namespace pb {
 	Body::Body(math::vec3f const & cm) {
 		// Set body center of mass
 		physical_properties.x = cm;
+		// DEBUG
+		physical_properties.q = math::quaternionFromAngleAxis(45.f, math::vec3f({ 1.f, 0.f, 0.f }));
 	}
 
 	Body::~Body() {}
 
+	void Body::addForce(math::vec3f const & f) {
+		physical_properties.force = physical_properties.force + f;
+	}
+
+	void Body::resetForce() {
+		physical_properties.force(0) = 0;
+		physical_properties.force(1) = 0;
+		physical_properties.force(2) = 0;
+	}
+
+	void Body::addForceAsTorque(math::vec3f const & f, math::vec3f const & p) {
+		physical_properties.torque = physical_properties.torque + math::crossProduct(f, p);
+	}
+
+	void Body::resetTorque() {
+		physical_properties.torque(0) = 0;
+		physical_properties.torque(1) = 0;
+		physical_properties.torque(2) = 0;
+	}
+
 	math::vec3f const & Body::getCenterOfMass() const {
 		return physical_properties.x;
+	}
+
+	math::mat4x4f Body::getOrientationMatrix() const {
+		return math::createRotationMatrix(physical_properties.q);
 	}
 
 	void Body::drawBody(GLuint const v_buff,
@@ -32,8 +58,9 @@ namespace pb {
 		// Preprocess
 		drawPreprocess();
 
-		// glPolygonMode(GL_FRONT, GL_LINE);
+		glPolygonMode(GL_FRONT, GL_LINE);
 		glDrawElements(GL_TRIANGLES, num_elements, GL_UNSIGNED_SHORT, (GLvoid*)0);
+		glPolygonMode(GL_FRONT, GL_FILL);
 
 		// Postprocess
 		drawPostprocess();

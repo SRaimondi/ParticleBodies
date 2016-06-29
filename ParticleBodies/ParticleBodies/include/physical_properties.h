@@ -27,7 +27,7 @@ namespace pb {
 		// Position
 		math::vec3f x;
 		// Orientation
-		math::Quaternion<float> q;
+		math::quaternionf q;
 		// Linear and angular momentum
 		math::vec3f P;
 		math::vec3f L;

@@ -220,6 +220,5 @@ void update_view(GLFWwindow* window, glm::vec3 const & look_at) {
 	glLoadIdentity();
 	glMultMatrixf(&M[0][0]);
 	glLightfv(GL_LIGHT0, GL_POSITION, lightpos0);
-
 }
 

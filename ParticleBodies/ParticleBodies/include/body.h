@@ -19,14 +19,29 @@ namespace pb {
 		// Virtual destructor
 		virtual ~Body();
 
+		// Add force to body
+		void addForce(math::vec3f const & f);
+
+		// Reset forces on body
+		void resetForce();
+
+		// Add force as torque
+		void addForceAsTorque(math::vec3f const & f, math::vec3f const & p);
+
+		// Reset torque
+		void resetTorque();
+
 		// Generate BBOX of the body
 		virtual void generateBBOX(math::vec3f * min, math::vec3f * max) const = 0;
 
 		// Check if a point is inside the object
 		virtual bool pointInside(math::vec3f const & p) const = 0;
 
-		// Get center of mass of thebody
+		// Get center of mass of the body
 		math::vec3f const & getCenterOfMass() const;
+
+		// Get rotation quaternion
+		math::mat4x4f getOrientationMatrix() const;
 
 		// Draw body
 		void drawBody(GLuint const v_buff,

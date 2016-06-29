@@ -21,10 +21,16 @@ namespace pb {
 						   GLuint const sphere_i_buff,
 						   GLuint const num_elements) const;
 
+		// Apply forces from particles to object
+		void transferForcesParticlesBody();
+
 	private:
 		// Generate body particles discretisation
 		void generateParticles(float const particle_diameter,
 							   bool const process_interior = true);
+
+		// Transform particle position to world space
+		math::vec3f particlePositionWorld(Particle const & particle) const;
 
 		// Physical body
 		Body * const body;

@@ -50,6 +50,9 @@ namespace pb {
 		//
 		// Compute auxiliary variables
 		//
+		// Update orientation matrix
+		rb->R = math::createMatrix(rb->q);
+
 		// Compute velocity
 		rb->v = rb->P / rb->mass;
 

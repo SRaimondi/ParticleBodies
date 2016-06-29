@@ -69,6 +69,10 @@ namespace pb {
 		}
 	}
 
+	math::vec3f BodyParticlesDiscretisation::particlePositionWorld(Particle const & particle) const {
+		return (body->getCenterOfMass() + math::transformLocation(body->getOrientationMatrix(), particle.position));
+	}
+
 	void BodyParticlesDiscretisation::drawParticles(GLuint const sphere_v_buff,
 													GLuint const sphere_i_buff,
 													GLuint const num_elements) const {
@@ -77,7 +81,7 @@ namespace pb {
 
 		// Translate to center of mass
 		glPushMatrix();
-		glTranslatef(body->getCenterOfMass()(0), body->getCenterOfMass()(1), body->getCenterOfMass()(2));
+		//glTranslatef(body->getCenterOfMass()(0), body->getCenterOfMass()(1), body->getCenterOfMass()(2));
 
 		// Set draw color
 		glColor3f(0.f, 0.f, 1.f);
@@ -95,7 +99,8 @@ namespace pb {
 		for (auto p = particles.begin(); p != particles.end(); p++) {
 			// Translate to particle position, wrt. center of mass
 			glPushMatrix();
-			glTranslatef(p->position(0), p->position(1), p->position(2));
+			math::vec3f particle_position = particlePositionWorld(*p);
+			glTranslatef(particle_position(0), particle_position(1), particle_position(2));
 			glScalef(p->radius, p->radius, p->radius);
 
 			// glPolygonMode(GL_FRONT, GL_LINE);
@@ -113,7 +118,18 @@ namespace pb {
 		glDisableClientState(GL_VERTEX_ARRAY);
 		glDisableClientState(GL_NORMAL_ARRAY);
 
+		// Pop matrix
 		glPopMatrix();
+	}
+
+	void BodyParticlesDiscretisation::transferForcesParticlesBody() {
+		// Loop over all particles
+		for (auto particle = particles.begin(); particle != particles.end(); particle++) {
+			// Apply force
+			body->addForce(particle->force);
+			// Apply torque
+			body->addForceAsTorque(particle->force, particle->position);
+		}
 	}
 
 } // pb namespace
