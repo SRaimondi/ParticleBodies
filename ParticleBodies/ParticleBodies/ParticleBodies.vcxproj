@@ -121,6 +121,7 @@
     <ClInclude Include="include\body.h" />
     <ClInclude Include="include\body_particles.h" />
     <ClInclude Include="include\constants.h" />
+    <ClInclude Include="include\euler.h" />
     <ClInclude Include="include\math_utilities.h" />
     <ClInclude Include="include\matrix.h" />
     <ClInclude Include="include\matrix_function.h" />
@@ -133,6 +134,7 @@
     <ClInclude Include="include\scalar.h" />
     <ClInclude Include="include\sphere.h" />
     <ClInclude Include="include\sphere_graphics.h" />
+    <ClInclude Include="include\system.h" />
     <ClInclude Include="include\traits.h" />
     <ClInclude Include="include\voxel_grid.h" />
   </ItemGroup>
@@ -144,6 +146,7 @@
     <ClCompile Include="source\physical_properties.cpp" />
     <ClCompile Include="source\sphere.cpp" />
     <ClCompile Include="source\sphere_graphics.cpp" />
+    <ClCompile Include="source\system.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

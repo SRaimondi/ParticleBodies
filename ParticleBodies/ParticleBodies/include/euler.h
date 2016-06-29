@@ -1,5 +1,8 @@
 #pragma once
 
+// DEBUG
+#include <iostream>
+
 class EulerSolver {
 public:
 	// Solve onestep of ODE using Euler method
@@ -7,6 +10,7 @@ public:
 							   size_t const len, float const t0, float const t1) {
 		for (size_t i = 0; i < len; i++) {
 			yend[i] = y0[i] + (t1 - t0) * ydot[i];
+			//std::cout << yend[i] << " " << y0[i] << " " << (t1 - t0) << " " << ydot[i] << std::endl;
 		}
 	}
 };

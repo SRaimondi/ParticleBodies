@@ -40,6 +40,15 @@
     <Filter Include="Source Files\graphics">
       <UniqueIdentifier>{cc709293-c855-4abe-8a02-832430fc0701}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\solver">
+      <UniqueIdentifier>{4a649636-9911-47af-9340-320f585b7dc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\system">
+      <UniqueIdentifier>{938e7577-f2d7-4b7b-9a58-f0d16a2425c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\system">
+      <UniqueIdentifier>{d903f801-b088-4a7f-b097-b0977932ef58}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\math_utilities.h">
@@ -93,6 +102,12 @@
     <ClInclude Include="include\body_particles.h">
       <Filter>Header Files\particle</Filter>
     </ClInclude>
+    <ClInclude Include="include\euler.h">
+      <Filter>Header Files\solver</Filter>
+    </ClInclude>
+    <ClInclude Include="include\system.h">
+      <Filter>Header Files\system</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -115,6 +130,9 @@
     </ClCompile>
     <ClCompile Include="source\sphere_graphics.cpp">
       <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\system.cpp">
+      <Filter>Source Files\system</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

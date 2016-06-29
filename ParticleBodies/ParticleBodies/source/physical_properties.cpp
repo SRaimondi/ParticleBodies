@@ -1,5 +1,8 @@
 #include "physical_properties.h"
 
+// DEBUG
+#include <iostream>
+
 namespace pb {
 
 	void stateToArray(PhysicalProperties const * const rb, float * y) {
@@ -30,6 +33,7 @@ namespace pb {
 		rb->x(0) = *y++;
 		rb->x(1) = *y++;
 		rb->x(2) = *y++;
+		//std::cout << "Position: " << rb->x(0) << " " << rb->x(1) << " " << rb->x(2) << std::endl;
 
 		// Copy orientation
 		rb->q.getReal() = *y++;
@@ -45,7 +49,7 @@ namespace pb {
 		// Copy angular momentum
 		rb->L(0) = *y++;
 		rb->L(1) = *y++;
-		rb->L(2) = *y++;
+		rb->L(2) = *y;
 
 		//
 		// Compute auxiliary variables
@@ -81,10 +85,12 @@ namespace pb {
 		*y_dot++ = rb->force(1);
 		*y_dot++ = rb->force(2);
 
+		//std::cout << "Force: " << rb->force(0) << " " << rb->force(1) << " " << rb->force(2) << std::endl;
+
 		// Copy torque
 		*y_dot++ = rb->torque(0);
 		*y_dot++ = rb->torque(1);
-		*y_dot++ = rb->torque(2);
+		*y_dot = rb->torque(2);
 	}
 
 } // pb namespace

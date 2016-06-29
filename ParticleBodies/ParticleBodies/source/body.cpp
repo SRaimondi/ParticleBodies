@@ -57,7 +57,7 @@ namespace pb {
 		stateToArray(&physical_properties, y);
 	}
 
-	void Body::arrayToBodyState(float * y) {
+	void Body::arrayToBodyState(float const * y) {
 		arrayToState(&physical_properties, y);
 	}
 

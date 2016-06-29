@@ -3,7 +3,7 @@
 #include <GLFW\glfw3.h>
 #include "sphere.h"
 #include "sphere_graphics.h"
-#include "body_particles.h"
+#include "system.h"
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
@@ -76,7 +76,7 @@ int main(void) {
 	glfwSetErrorCallback(error_callback);
 	glfwSetKeyCallback(window, keyCallback);
 	glfwSetScrollCallback(window, scrollCallback);
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	glClearColor(1.f, 1.f, 1.f, 1.f);
 	glEnable(GL_DEPTH_TEST);
@@ -111,6 +111,11 @@ int main(void) {
 	pb::BodyParticlesDiscretisation sphere_discretisation0 = pb::BodyParticlesDiscretisation(sphere0, 0.1f);
 	pb::BodyParticlesDiscretisation sphere_discretisation1 = pb::BodyParticlesDiscretisation(sphere1, 0.1f);
 
+	pb::System system = pb::System(0.f, 1.f / 50.f);
+
+	system.addBody(&sphere_discretisation0);
+	//system.addBody(&sphere_discretisation1);
+
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -118,21 +123,30 @@ int main(void) {
 		// Poll for and process events
 		glfwPollEvents();
 
+		// Compute system step
+		system.computeStep();
+
 		// Call resize function
 		resize(window);
 
 		update_view(window, glm::vec3(0.f, 0.f, 0.f));
 
-		// Draw particles
-		sphere_discretisation0.drawParticles(part_v_buff, part_i_buff, part_num_elements);
-		sphere_discretisation1.drawParticles(part_v_buff, part_i_buff, part_num_elements);
+		// Draw system
+		system.draw(part_v_buff, part_i_buff, part_num_elements,
+					sphere_v_buff, sphere_i_buff, sphere_num_elements);
 
-		// Draw objects
-		sphere0->drawBody(sphere_v_buff, sphere_i_buff, sphere_num_elements);
-		sphere1->drawBody(sphere_v_buff, sphere_i_buff, sphere_num_elements);
+		//// Draw particles
+		//sphere_discretisation0.drawParticles(part_v_buff, part_i_buff, part_num_elements);
+		//sphere_discretisation1.drawParticles(part_v_buff, part_i_buff, part_num_elements);
+
+		//// Draw objects
+		//sphere0->drawBody(sphere_v_buff, sphere_i_buff, sphere_num_elements);
+		//sphere1->drawBody(sphere_v_buff, sphere_i_buff, sphere_num_elements);
 
 		// Swap front and back buffers
 		glfwSwapBuffers(window);
+
+		getchar();
 	}
 
 	glfwTerminate();

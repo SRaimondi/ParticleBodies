@@ -54,7 +54,7 @@ namespace pb {
 		void bodyStateToArray(float * y) const;
 
 		// Copy the array into the object state
-		void arrayToBodyState(float * y);
+		void arrayToBodyState(float const * y);
 
 		// Copy state derivative to array
 		void ddtBodyStateToArray(float * y_dot) const;
