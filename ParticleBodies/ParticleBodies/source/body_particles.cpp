@@ -132,4 +132,8 @@ namespace pb {
 		}
 	}
 
+	Body * const BodyParticlesDiscretisation::getBody() const {
+		return body;
+	}
+
 } // pb namespace

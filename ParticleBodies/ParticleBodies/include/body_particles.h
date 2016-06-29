@@ -24,6 +24,9 @@ namespace pb {
 		// Apply forces from particles to object
 		void transferForcesParticlesBody();
 
+		// Get pointer to the body
+		Body * const getBody() const;
+
 	private:
 		// Generate body particles discretisation
 		void generateParticles(float const particle_diameter,
