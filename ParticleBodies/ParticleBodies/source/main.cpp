@@ -78,7 +78,7 @@ int main(void) {
 	glfwSetScrollCallback(window, scrollCallback);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	glClearColor(0.f, 0.f, 0.f, 1.f);
+	glClearColor(1.f, 1.f, 1.f, 1.f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
@@ -88,8 +88,16 @@ int main(void) {
 
 	glEnable(GL_COLOR_MATERIAL);
 
+	// Enable blending
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
+	
+	// Create buffers for particle drawing
+	GLuint part_v_buff, part_i_buff, part_num_elements;
+	pb::SphereGraphic::createSphereGraphic(10, 10, &part_v_buff, &part_i_buff, &part_num_elements);
 
 	// Create buffers for sphere drawing
 	GLuint sphere_v_buff, sphere_i_buff, sphere_num_elements;
@@ -100,8 +108,8 @@ int main(void) {
 	pb::Body * sphere1 = new pb::Sphere(pb::math::vec3f({ -2.f, 0.f, 0.f }), 2.f);
 
 	// Create sphere discretisation
-	pb::BodyParticlesDiscretisation sphere_discretisation0 = pb::BodyParticlesDiscretisation(sphere0, 0.1f);
-	pb::BodyParticlesDiscretisation sphere_discretisation1 = pb::BodyParticlesDiscretisation(sphere1, 0.2f);
+	pb::BodyParticlesDiscretisation sphere_discretisation0 = pb::BodyParticlesDiscretisation(sphere0, 0.05f);
+	pb::BodyParticlesDiscretisation sphere_discretisation1 = pb::BodyParticlesDiscretisation(sphere1, 0.05f);
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window)) {
@@ -116,8 +124,12 @@ int main(void) {
 		update_view(window, glm::vec3(0.f, 0.f, 0.f));
 
 		// Draw particles
-		sphere_discretisation0.drawParticles(sphere_v_buff, sphere_i_buff, sphere_num_elements);
-		sphere_discretisation1.drawParticles(sphere_v_buff, sphere_i_buff, sphere_num_elements);
+		sphere_discretisation0.drawParticles(part_v_buff, part_i_buff, part_num_elements);
+		sphere_discretisation1.drawParticles(part_v_buff, part_i_buff, part_num_elements);
+
+		// Draw objects
+		sphere0->drawBody(sphere_v_buff, sphere_i_buff, sphere_num_elements);
+		sphere1->drawBody(sphere_v_buff, sphere_i_buff, sphere_num_elements);
 
 		// Swap front and back buffers
 		glfwSwapBuffers(window);
@@ -160,7 +172,7 @@ void resize(GLFWwindow* window) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glFrustum(-ratio, ratio, -1.f, 1.f, 0.5f, 10.f);
-	//glOrtho(-4.f, 4.f, -4.f, 4.f, 1.f, 10.f);
+	//glOrtho(-4.f, 4.f, -4.f, 4.f, 0.5f, 10.f);
 }
 
 

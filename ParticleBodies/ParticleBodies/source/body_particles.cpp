@@ -1,4 +1,5 @@
 #include "body_particles.h"
+#include "body.h"
 #include "voxel_grid.h"
 
 namespace pb {
@@ -9,7 +10,8 @@ namespace pb {
 		generateParticles(particle_diameter);
 	}
 
-	void BodyParticlesDiscretisation::generateParticles(float const particle_diameter) {
+	void BodyParticlesDiscretisation::generateParticles(float const particle_diameter,
+														bool const process_interior) {
 		// Request to body BBOX 
 		math::vec3f min, max;
 		body->generateBBOX(&min, &max);
@@ -47,7 +49,9 @@ namespace pb {
 		}
 
 		// Voxel grid processing
-		voxel_grid.removeInteriorVoxels();
+		if (process_interior) {
+			voxel_grid.removeInteriorVoxels();
+		}
 
 		// Loop over all voxels set to true and add particle at that point
 		for (size_t voxel_y = 0; voxel_y < part_y; voxel_y++) {
@@ -75,6 +79,18 @@ namespace pb {
 		glPushMatrix();
 		glTranslatef(body->getCenterOfMass()(0), body->getCenterOfMass()(1), body->getCenterOfMass()(2));
 
+		// Set draw color
+		glColor3f(0.f, 0.f, 1.f);
+		// Enable vertex and normal client state
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_NORMAL_ARRAY);
+		// Bind buffers
+		glBindBuffer(GL_ARRAY_BUFFER, sphere_v_buff);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphere_i_buff);
+		// Set data format
+		glVertexPointer(3, GL_FLOAT, 6 * sizeof(GLfloat), (GLvoid*)0);
+		glNormalPointer(GL_FLOAT, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+
 		// Use list of particles to draw them
 		for (auto p = particles.begin(); p != particles.end(); p++) {
 			// Translate to particle position, wrt. center of mass
@@ -82,26 +98,20 @@ namespace pb {
 			glTranslatef(p->position(0), p->position(1), p->position(2));
 			glScalef(p->radius, p->radius, p->radius);
 
-			// Draw particle
-			glColor3f(0.f, 0.f, 1.f);
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glEnableClientState(GL_NORMAL_ARRAY);
-			glBindBuffer(GL_ARRAY_BUFFER, sphere_v_buff);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphere_i_buff);
-			glVertexPointer(3, GL_FLOAT, 6 * sizeof(GLfloat), (GLvoid*)0);
-			glNormalPointer(GL_FLOAT, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 			// glPolygonMode(GL_FRONT, GL_LINE);
 			glDrawElements(GL_TRIANGLES, num_elements, GL_UNSIGNED_SHORT, (GLvoid*)0);
 
-			// Pop matrix form stack
+			// Pop matrix from stack
 			glPopMatrix();
-
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-			glDisableClientState(GL_VERTEX_ARRAY);
-			glDisableClientState(GL_NORMAL_ARRAY);
 		}
+
+		// Unbind buffers
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		// Disable client state
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_NORMAL_ARRAY);
 
 		glPopMatrix();
 	}

@@ -61,7 +61,26 @@ namespace pb {
 		// Compute distance
 		float distance = math::magnitude(p - physical_properties.x);
 		// Check if distance between center and voxel center is less than radius
-		return (distance < radius);
+		return (distance <= radius);
+	}
+
+	void Sphere::drawPreprocess() const {
+		// Set matrix mode to model view
+		glMatrixMode(GL_MODELVIEW);
+
+		// Translate to center of mass
+		glPushMatrix();
+		glTranslatef(physical_properties.x(0), physical_properties.x(1), physical_properties.x(2));
+		glScalef(radius, radius, radius);
+
+		// Set draw color
+		glColor4f(1.f, 0.f, 0.f, 0.5f);
+	}
+
+	void Sphere::drawPostprocess() const {
+		// Set matrix mode to model view
+		glMatrixMode(GL_MODELVIEW);
+		glPopMatrix();
 	}
 
 } // pb namespace

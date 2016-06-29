@@ -2,6 +2,7 @@
 
 // Includes
 #include "physical_properties.h"
+#include <GL/glew.h>
 #include <vector>
 
 namespace pb {
@@ -18,9 +19,6 @@ namespace pb {
 		// Virtual destructor
 		virtual ~Body();
 
-		// This method is called before the simulation to generate the particle approximation for each object
-		//void generateBodyParticles(float const particle_diameter);
-
 		// Generate BBOX of the body
 		virtual void generateBBOX(math::vec3f * min, math::vec3f * max) const = 0;
 
@@ -30,22 +28,20 @@ namespace pb {
 		// Get center of mass of thebody
 		math::vec3f const & getCenterOfMass() const;
 
+		// Draw body
+		void drawBody(GLuint const v_buff,
+					  GLuint const i_buff,
+					  GLuint const num_elements) const;
+
 	protected:
-		// Generate grid minimum and maximum for the grid
-		//void generateGridMinMax(math::vec3f * grid_min, math::vec3f * grid_max, float const particle_diameter) const;
+		// Preprocessing needed for drawing
+		virtual void drawPreprocess() const = 0;
 
-		// Generate VoxelGrid from object
-		//virtual VoxelGrid<bool> generateVoxelGrid() const = 0;
-
-		// List of particles belonging to the body, position of the particles is with respect
-		// to the body center of mass
-		//std::vector<Particle> body_particles;
+		// Postprocessing after drawing
+		virtual void drawPostprocess() const = 0;
 
 		// Body physical description
 		PhysicalProperties physical_properties;
-
-		// DEBUG particle draw buffer
-		// unsigned int v_buff, i_buff;
 	};
 
 } // pb namespace

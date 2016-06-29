@@ -1,11 +1,14 @@
 #pragma once
 
-#include "body.h"
+#include <GL/glew.h>
 #include "particle.h"
 #include <vector>
-#include <GL\glew.h>
 
 namespace pb {
+
+	// Classes forward declaration
+	class Body;
+	class Particle;
 
 	// This class defines the connection between a Body and his physical approximation
 	class BodyParticlesDiscretisation {
@@ -20,7 +23,8 @@ namespace pb {
 
 	private:
 		// Generate body particles discretisation
-		void generateParticles(float const particle_diameter);
+		void generateParticles(float const particle_diameter,
+							   bool const process_interior = true);
 
 		// Physical body
 		Body * const body;

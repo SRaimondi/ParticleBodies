@@ -44,7 +44,7 @@ namespace pb {
 		// Magnitude 
 		template <typename T, size_t SIZE, typename EXPR>
 		T magnitude(Matrix<T, SIZE, 1, EXPR> const & v) {
-			return (sqrtf(sqrMagnitude(v)));
+			return (sqrt(sqrMagnitude(v)));
 		}
 
 		// Normalize vector matrix
