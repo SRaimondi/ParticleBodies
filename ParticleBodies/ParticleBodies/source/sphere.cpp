@@ -5,8 +5,12 @@ namespace pb {
 	Sphere::Sphere()
 		: Body(), radius(1.f) {}
 
-	Sphere::Sphere(math::vec3f const & cm, float const radius)
-		: Body(cm), radius(radius) {}
+	Sphere::Sphere(math::vec3f const & cm, float const mass,
+				   math::quaternionf const & orientation, float const radius)
+		: Body(cm, mass, orientation), radius(radius) {
+		// Compute inertia tensor of the body
+		computeInertiaTensor();
+	}
 
 	void Sphere::generateBBOX(math::vec3f * min, math::vec3f * max) const {
 		// Set BBOX minimum
@@ -50,6 +54,14 @@ namespace pb {
 		// Set matrix mode to model view
 		glMatrixMode(GL_MODELVIEW);
 		glPopMatrix();
+	}
+
+	void Sphere::computeInertiaTensor() {
+		float inertia_tensor_entry = 2.f / 5.f * physical_properties.mass * radius * radius;
+		for (size_t i = 0; i < 3; i++) {
+			physical_properties.inertia_tensor_body(i, i) = inertia_tensor_entry;
+			physical_properties.inv_inertia_tensor_body(i, i) = 1.f / inertia_tensor_entry;
+		}
 	}
 
 } // pb namespace

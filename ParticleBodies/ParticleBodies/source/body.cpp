@@ -5,11 +5,14 @@ namespace pb {
 
 	Body::Body() {}
 
-	Body::Body(math::vec3f const & cm) {
+	Body::Body(math::vec3f const & cm, float const mass,
+			   math::quaternionf const & orientation) {
+		// Set mass
+		physical_properties.mass = mass;
 		// Set body center of mass
 		physical_properties.x = cm;
-		// DEBUG
-		physical_properties.q = math::quaternionFromAngleAxis(45.f, math::vec3f({ 1.f, 0.f, 0.f }));
+		// Set body orientation
+		physical_properties.q = orientation;
 	}
 
 	Body::~Body() {}
@@ -42,6 +45,14 @@ namespace pb {
 		return math::createRotationMatrix(physical_properties.q);
 	}
 
+	math::vec3f Body::pointVelocityWorld(math::vec3f const & p) const {
+		return (physical_properties.v + math::crossProduct(physical_properties.omega, p - physical_properties.x));
+	}
+
+	math::vec3f Body::pointVelocityLocal(math::vec3f const & p) const {
+		return (math::crossProduct(physical_properties.omega, p));
+	}
+
 	void Body::drawBody(GLuint const v_buff,
 						GLuint const i_buff,
 						GLuint const num_elements) const {
@@ -58,7 +69,7 @@ namespace pb {
 		// Preprocess
 		drawPreprocess();
 
-		glPolygonMode(GL_FRONT, GL_LINE);
+		//glPolygonMode(GL_FRONT, GL_LINE);
 		glDrawElements(GL_TRIANGLES, num_elements, GL_UNSIGNED_SHORT, (GLvoid*)0);
 		glPolygonMode(GL_FRONT, GL_FILL);
 

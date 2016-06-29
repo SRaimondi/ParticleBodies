@@ -14,7 +14,8 @@ namespace pb {
 		// Constructor
 		Body();
 
-		Body(math::vec3f const & cm);
+		Body(math::vec3f const & cm, float const mass,
+			 math::quaternionf const & orientation);
 
 		// Virtual destructor
 		virtual ~Body();
@@ -43,6 +44,12 @@ namespace pb {
 		// Get rotation quaternion
 		math::mat4x4f getOrientationMatrix() const;
 
+		// Compute velocity of a point, in world space, on the body 
+		math::vec3f pointVelocityWorld(math::vec3f const & p) const;
+
+		// Compute velocity of a point in local space on the body
+		math::vec3f pointVelocityLocal(math::vec3f const & p) const;
+
 		// Draw body
 		void drawBody(GLuint const v_buff,
 					  GLuint const i_buff,
@@ -54,6 +61,9 @@ namespace pb {
 
 		// Postprocessing after drawing
 		virtual void drawPostprocess() const = 0;
+
+		// Compute inertia tensor of the body
+		virtual void computeInertiaTensor() = 0;
 
 		// Body physical description
 		PhysicalProperties physical_properties;

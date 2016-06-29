@@ -10,7 +10,8 @@ namespace pb {
 		// Constructor
 		Sphere();
 
-		Sphere(math::vec3f const & cm, float const radius);
+		Sphere(math::vec3f const & cm, float const mass,
+			   math::quaternionf const & orientation, float const radius);
 
 		// Generate BBOX of the object
 		void generateBBOX(math::vec3f * min, math::vec3f * max) const override;
@@ -18,13 +19,16 @@ namespace pb {
 		// Check if voxel is inside the body
 		bool pointInside(math::vec3f const & p) const override;
 
+	private:
 		// Preprocessing needed for drawing
 		void drawPreprocess() const override;
 
 		// Postprocessing after drawing
 		void drawPostprocess() const override;
 
-	private:
+		// Compute inertia tensor of the body
+		void computeInertiaTensor() override;
+
 		// Sphere radius
 		float const radius;
 	};
