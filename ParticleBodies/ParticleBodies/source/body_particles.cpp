@@ -41,14 +41,13 @@ namespace pb {
 					// Check if voxel is inside
 					if (body->pointInside(voxel_center)) {
 						voxel_grid.setElement(voxel_x, voxel_y, voxel_z, true);
-					} else {
-						voxel_grid.setElement(voxel_x, voxel_y, voxel_z, false);
 					}
 				}
 			}
 		}
 
 		// Voxel grid processing
+		voxel_grid.removeInteriorVoxels();
 
 		// Loop over all voxels set to true and add particle at that point
 		for (size_t voxel_y = 0; voxel_y < part_y; voxel_y++) {
@@ -84,7 +83,7 @@ namespace pb {
 			glScalef(p->radius, p->radius, p->radius);
 
 			// Draw particle
-			glColor3f(1.f, 1.f, 1.f);
+			glColor3f(0.f, 0.f, 1.f);
 			glEnableClientState(GL_VERTEX_ARRAY);
 			glEnableClientState(GL_NORMAL_ARRAY);
 			glBindBuffer(GL_ARRAY_BUFFER, sphere_v_buff);

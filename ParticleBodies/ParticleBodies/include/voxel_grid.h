@@ -6,6 +6,17 @@
 
 namespace pb {
 
+	// Define Voxel struct
+	template <typename ELEMENT>
+	struct Voxel {
+		// Constructor
+		Voxel(ELEMENT const & e)
+			: voxel_content(e) {}
+
+		// Voxel content
+		ELEMENT voxel_content;
+	};
+
 	template <typename ELEMENT>
 	class VoxelGrid {
 	public:
@@ -16,11 +27,18 @@ namespace pb {
 		// Destructor
 		~VoxelGrid();
 
+		//
+		// Preprocessing functions
+		//
+		
+		// Remove all voxels that are compleatly surronded by other voxels that are not empty 
+		void removeInteriorVoxels();
+
 		// Set element value at a certain voxel
 		void setElement(size_t const x, size_t const y, size_t const z, ELEMENT const & elem);
 
-		// Get value in voxel
-		ELEMENT const & getElement(size_t const x, size_t const y, size_t const z) const;
+		// Get voxel
+		Voxel<ELEMENT> const * getElement(size_t const x, size_t const y, size_t const z) const;
 
 		// Get voxel center
 		math::vec3f getVoxelCenter(size_t const x, size_t const y, size_t const z) const;
@@ -31,12 +49,12 @@ namespace pb {
 		size_t getGridDimZ() const;
 
 		// Get iterator to first voxel
-		typename std::vector<ELEMENT>::iterator voxelsBegin();
-		typename std::vector<ELEMENT>::const_iterator voxelsBegin() const;
+		typename std::vector<Voxel<ELEMENT> >::iterator voxelsBegin();
+		typename std::vector<Voxel<ELEMENT> >::const_iterator voxelsBegin() const;
 
 		// Get iterator to last voxel
-		typename std::vector<ELEMENT>::iterator voxelsEnd();
-		typename std::vector<ELEMENT>::const_iterator voxelsEnd() const;
+		typename std::vector<Voxel<ELEMENT> >::iterator voxelsEnd();
+		typename std::vector<Voxel<ELEMENT> >::const_iterator voxelsEnd() const;
 
 	protected:
 		// Voxel grid dimensions
@@ -50,8 +68,8 @@ namespace pb {
 		float const voxel_x;
 		float const voxel_y;
 		float const voxel_z;
-		// Value in each voxel
-		std::vector<ELEMENT> voxels_content;
+		// List of voxels
+		std::vector<Voxel<ELEMENT> *> voxels;
 	};
 
 	// VoxelGrid class methods implementation
@@ -64,12 +82,49 @@ namespace pb {
 		voxel_y((grid_max(1) - grid_min(1)) / static_cast<float>(y_dim)),
 		voxel_z((grid_max(2) - grid_min(2)) / static_cast<float>(z_dim)) {
 		// Resize vector to old all voxels information
-		voxels_content.resize(x_dim * y_dim * z_dim);
+		voxels.resize(x_dim * y_dim * z_dim);
+		// Set all voxels to null // TODO: CHECK IF WE NEED THIS
+		for (auto it = voxels.begin(); it != voxels.end(); it++) {
+			*it = nullptr;
+		}
 	}
 
 	template <typename ELEMENT>
 	VoxelGrid<ELEMENT>::~VoxelGrid() {
-		//delete[] voxels_content;
+		// Free all voxels
+		for (auto voxel = voxels.begin(); voxel != voxels.end(); voxel++) {
+			if (*voxel) {
+				delete (*voxel);
+			}
+		}
+	}
+
+	template <typename ELEMENT>
+	void VoxelGrid<ELEMENT>::removeInteriorVoxels() {
+		std::vector<size_t> delete_voxel;
+		// Loop over all interior voxels
+		for (size_t y = 1; y < y_dim - 1; y++) {
+			for (size_t z = 1; z < z_dim - 1; z++) {
+				for (size_t x = 1; x < x_dim - 1; x++) {
+					// Check if surronding voxels are all non-null 
+					if (voxels[x + 1 + x_dim * z + x_dim * z_dim * y] &&
+						voxels[x - 1 + x_dim * z + x_dim * z_dim * y] &&
+						voxels[x + x_dim * (z + 1) + x_dim * z_dim * y] &&
+						voxels[x + x_dim * (z - 1) + x_dim * z_dim * y] &&
+						voxels[x + x_dim * z + x_dim * z_dim * (y + 1)] &&
+						voxels[x + x_dim * z + x_dim * z_dim * (y - 1)]) {
+						// Set voxel index to be removed
+						delete_voxel.push_back(x + x_dim * z + x_dim * z_dim * y);
+					}
+				}
+			}
+		}
+
+		// Loop over all voxels marked and remove them
+		for (auto it = delete_voxel.begin(); it != delete_voxel.end(); it++) {
+			delete voxels[*it];
+			voxels[*it] = nullptr;
+		}
 	}
 
 	template <typename ELEMENT>
@@ -80,12 +135,16 @@ namespace pb {
 		assert(z >= 0 && z < z_dim);
 #endif //  _DEBUG
 
-		// Set element value
-		voxels_content[x + x_dim * z + x_dim * z_dim * y] = elem;
+		// Check if voxel as already been created
+		if (voxels[x + x_dim * z + x_dim * z_dim * y]) {
+			voxels[x + x_dim * z + x_dim * z_dim * y]->voxel_content = elem;
+		} else {
+			voxels[x + x_dim * z + x_dim * z_dim * y] = new Voxel<ELEMENT>(elem);
+		}
 	}
 
 	template <typename ELEMENT>
-	ELEMENT const & VoxelGrid<ELEMENT>::getElement(size_t const x, size_t const y, size_t const z) const {
+	Voxel<ELEMENT> const * VoxelGrid<ELEMENT>::getElement(size_t const x, size_t const y, size_t const z) const {
 #ifdef  _DEBUG
 		assert(x >= 0 && x < x_dim);
 		assert(y >= 0 && y < y_dim);
@@ -93,7 +152,7 @@ namespace pb {
 #endif //  _DEBUG
 
 		// Return element 
-		return voxels_content[x + x_dim * z + x_dim * z_dim * y];
+		return voxels[x + x_dim * z + x_dim * z_dim * y];
 	}
 
 	template <typename ELEMENT>
@@ -125,22 +184,22 @@ namespace pb {
 	}
 
 	template <typename ELEMENT>
-	typename std::vector<ELEMENT>::iterator VoxelGrid<ELEMENT>::voxelsBegin() {
+	typename std::vector<Voxel<ELEMENT> >::iterator VoxelGrid<ELEMENT>::voxelsBegin() {
 		return voxels_content.begin();
 	}
 
 	template <typename ELEMENT>
-	typename std::vector<ELEMENT>::const_iterator VoxelGrid<ELEMENT>::voxelsBegin() const {
+	typename std::vector<Voxel<ELEMENT> >::const_iterator VoxelGrid<ELEMENT>::voxelsBegin() const {
 		return voxels_content.begin();
 	}
 
 	template <typename ELEMENT>
-	typename std::vector<ELEMENT>::iterator VoxelGrid<ELEMENT>::voxelsEnd() {
+	typename std::vector<Voxel<ELEMENT> >::iterator VoxelGrid<ELEMENT>::voxelsEnd() {
 		return voxels_content.end();
 	}
 
 	template <typename ELEMENT>
-	typename std::vector<ELEMENT>::const_iterator VoxelGrid<ELEMENT>::voxelsEnd() const {
+	typename std::vector<Voxel<ELEMENT> >::const_iterator VoxelGrid<ELEMENT>::voxelsEnd() const {
 		return voxels_content.end();
 	}
 

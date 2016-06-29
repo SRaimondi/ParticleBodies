@@ -96,10 +96,12 @@ int main(void) {
 	pb::SphereGraphic::createSphereGraphic(30, 30, &sphere_v_buff, &sphere_i_buff, &sphere_num_elements);
 
 	// Create sphere
-	pb::Body * sphere = new pb::Sphere(pb::math::vec3f(), 1.f);
+	pb::Body * sphere0 = new pb::Sphere(pb::math::vec3f({ 1.f, 0.f, 0.f }), 1.f);
+	pb::Body * sphere1 = new pb::Sphere(pb::math::vec3f({ -2.f, 0.f, 0.f }), 2.f);
 
 	// Create sphere discretisation
-	pb::BodyParticlesDiscretisation sphere_discretisation = pb::BodyParticlesDiscretisation(sphere, 0.2f);
+	pb::BodyParticlesDiscretisation sphere_discretisation0 = pb::BodyParticlesDiscretisation(sphere0, 0.1f);
+	pb::BodyParticlesDiscretisation sphere_discretisation1 = pb::BodyParticlesDiscretisation(sphere1, 0.2f);
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window)) {
@@ -114,7 +116,8 @@ int main(void) {
 		update_view(window, glm::vec3(0.f, 0.f, 0.f));
 
 		// Draw particles
-		sphere_discretisation.drawParticles(sphere_v_buff, sphere_i_buff, sphere_num_elements);
+		sphere_discretisation0.drawParticles(sphere_v_buff, sphere_i_buff, sphere_num_elements);
+		sphere_discretisation1.drawParticles(sphere_v_buff, sphere_i_buff, sphere_num_elements);
 
 		// Swap front and back buffers
 		glfwSwapBuffers(window);
@@ -199,11 +202,12 @@ void update_view(GLFWwindow* window, glm::vec3 const & look_at) {
 	M = glm::lookAt(cam_pos, look_at, glm::vec3(0.f, 1.f, 0.f));
 
 	// Compute light position
-	GLfloat lightpos0[] = { 0.f, 1.f, 0.f, 0.f };
-
+	GLfloat lightpos0[] = { 1.f, 1.f, 1.f, 0.f };
+	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glLightfv(GL_LIGHT0, GL_POSITION, lightpos0);
 	glMultMatrixf(&M[0][0]);
+	glLightfv(GL_LIGHT0, GL_POSITION, lightpos0);
+
 }
 
