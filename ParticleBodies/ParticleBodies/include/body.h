@@ -50,6 +50,15 @@ namespace pb {
 		// Compute velocity of a point in local space on the body
 		math::vec3f pointVelocityLocal(math::vec3f const & p) const;
 
+		// Copy the body state information to an array
+		void bodyStateToArray(float * y) const;
+
+		// Copy the array into the object state
+		void arrayToBodyState(float * y);
+
+		// Copy state derivative to array
+		void ddtBodyStateToArray(float * y_dot) const;
+
 		// Draw body
 		void drawBody(GLuint const v_buff,
 					  GLuint const i_buff,

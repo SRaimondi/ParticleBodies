@@ -53,6 +53,18 @@ namespace pb {
 		return (math::crossProduct(physical_properties.omega, p));
 	}
 
+	void Body::bodyStateToArray(float * y) const {
+		stateToArray(&physical_properties, y);
+	}
+
+	void Body::arrayToBodyState(float * y) {
+		arrayToState(&physical_properties, y);
+	}
+
+	void Body::ddtBodyStateToArray(float * y_dot) const {
+		ddtStateToArray(&physical_properties, y_dot);
+	}
+
 	void Body::drawBody(GLuint const v_buff,
 						GLuint const i_buff,
 						GLuint const num_elements) const {
