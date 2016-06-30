@@ -101,11 +101,11 @@ int main(void) {
 
 	// Create buffers for sphere drawing
 	GLuint sphere_v_buff, sphere_i_buff, sphere_num_elements;
-	pb::SphereGraphic::createSphereGraphic(30, 30, &sphere_v_buff, &sphere_i_buff, &sphere_num_elements);
+	pb::SphereGraphic::createSphereGraphic(40, 30, &sphere_v_buff, &sphere_i_buff, &sphere_num_elements);
 
 	// Create sphere
-	pb::Body * sphere0 = new pb::Sphere(pb::math::vec3f({ 1.5f, 0.f, 0.f }), 1.f, pb::math::quaternionFromAngleAxis(0.f, pb::math::vec3f({1.f, 0.f, 0.f})), 1.f);
-	pb::Body * sphere1 = new pb::Sphere(pb::math::vec3f({ -2.f, 0.f, 0.f }), 1.f, pb::math::quaternionFromAngleAxis(0.f, pb::math::vec3f({ 1.f, 0.f, 0.f })), 2.f);
+	pb::Body * sphere0 = new pb::Sphere(pb::math::vec3f({ 0.f, 4.f, 0.f }), 1.f, pb::math::quaternionFromAngleAxis(0.f, pb::math::vec3f({1.f, 0.f, 0.f})), 1.f);
+	pb::Body * sphere1 = new pb::Sphere(pb::math::vec3f({ 0.f, 0.f, 0.f }), INFINITY, pb::math::quaternionFromAngleAxis(0.f, pb::math::vec3f({ 1.f, 0.f, 0.f })), 2.f);
 
 	// Create sphere discretisation
 	pb::BodyParticlesDiscretisation sphere_discretisation0 = pb::BodyParticlesDiscretisation(sphere0, 0.1f);

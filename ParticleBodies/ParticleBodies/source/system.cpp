@@ -12,13 +12,18 @@ namespace pb {
 	}
 
 	void System::computeForceAndTorque(float const time) const {
-		// Add gravity to all bodies
+		// Compute forces between bodies using particles approximation
+
+		// Add gravity to all bodies and transfer partcile forces to them
 		for (auto body = bodies.begin(); body != bodies.end(); body++) {
 			(*body)->getBody()->resetForce();
 			(*body)->getBody()->resetTorque();
 
 			// Add gravity
 			(*body)->getBody()->addForce(math::vec3f({0.f, -0.1f, 0.f}));
+
+			// Transfer particle forces to body
+			(*body)->transferForcesParticlesBody();
 		}
 	}
 
@@ -56,6 +61,21 @@ namespace pb {
 			// Draw body
 			(*it)->getBody()->drawBody(v_s, i_s, n_s);
 		}
+
+		// Draw coordinate system
+		glColor3f(0.f, 0.f, 0.f);
+		glLineWidth(2.f);
+		glBegin(GL_LINES);
+		// X axis
+		glVertex3f(0.f, 0.f, 0.f);
+		glVertex3f(5.f, 0.f, 0.f);
+		// Y axis
+		glVertex3f(0.f, 0.f, 0.f);
+		glVertex3f(0.f, 5.f, 0.f);
+		// Z axis
+		glVertex3f(0.f, 0.f, 0.f);
+		glVertex3f(0.f, 0.f, 5.f);
+		glEnd();
 	}
 
 } // pb namespace

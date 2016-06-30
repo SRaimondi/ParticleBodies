@@ -84,7 +84,7 @@ namespace pb {
 		// Preprocess
 		drawPreprocess();
 
-		glPolygonMode(GL_FRONT, GL_LINE);
+		//glPolygonMode(GL_FRONT, GL_LINE);
 		glDrawElements(GL_TRIANGLES, num_elements, GL_UNSIGNED_SHORT, (GLvoid*)0);
 		glPolygonMode(GL_FRONT, GL_FILL);
 
