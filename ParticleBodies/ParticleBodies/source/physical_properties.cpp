@@ -33,7 +33,6 @@ namespace pb {
 		rb->x(0) = *y++;
 		rb->x(1) = *y++;
 		rb->x(2) = *y++;
-		//std::cout << "Position: " << rb->x(0) << " " << rb->x(1) << " " << rb->x(2) << std::endl;
 
 		// Copy orientation
 		rb->q.getReal() = *y++;
@@ -55,10 +54,10 @@ namespace pb {
 		// Compute auxiliary variables
 		//
 		// Update orientation matrix
-		rb->R = math::createMatrix(rb->q);
+		rb->R = math::createMatrix(math::normalize(rb->q));
 
 		// Compute velocity
-		rb->v = rb->P / rb->mass;
+		rb->v = rb->P * (1.f / rb->mass);
 
 		// Compute inverse of inertia tensor
 		rb->inv_inertia_tensor = rb->R * rb->inv_inertia_tensor_body * math::transpose(rb->R);
@@ -84,8 +83,6 @@ namespace pb {
 		*y_dot++ = rb->force(0);
 		*y_dot++ = rb->force(1);
 		*y_dot++ = rb->force(2);
-
-		//std::cout << "Force: " << rb->force(0) << " " << rb->force(1) << " " << rb->force(2) << std::endl;
 
 		// Copy torque
 		*y_dot++ = rb->torque(0);

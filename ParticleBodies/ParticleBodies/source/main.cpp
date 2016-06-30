@@ -104,17 +104,17 @@ int main(void) {
 	pb::SphereGraphic::createSphereGraphic(30, 30, &sphere_v_buff, &sphere_i_buff, &sphere_num_elements);
 
 	// Create sphere
-	pb::Body * sphere0 = new pb::Sphere(pb::math::vec3f({ 1.f, 0.f, 0.f }), 1.f, pb::math::quaternionFromAngleAxis(45.f, pb::math::vec3f({1.f, 0.f, 0.f})), 1.f);
+	pb::Body * sphere0 = new pb::Sphere(pb::math::vec3f({ 1.5f, 0.f, 0.f }), 1.f, pb::math::quaternionFromAngleAxis(0.f, pb::math::vec3f({1.f, 0.f, 0.f})), 1.f);
 	pb::Body * sphere1 = new pb::Sphere(pb::math::vec3f({ -2.f, 0.f, 0.f }), 1.f, pb::math::quaternionFromAngleAxis(0.f, pb::math::vec3f({ 1.f, 0.f, 0.f })), 2.f);
 
 	// Create sphere discretisation
 	pb::BodyParticlesDiscretisation sphere_discretisation0 = pb::BodyParticlesDiscretisation(sphere0, 0.1f);
 	pb::BodyParticlesDiscretisation sphere_discretisation1 = pb::BodyParticlesDiscretisation(sphere1, 0.1f);
 
-	pb::System system = pb::System(0.f, 1.f / 50.f);
+	pb::System system = pb::System(0.f, 1.f / 30.f);
 
 	system.addBody(&sphere_discretisation0);
-	//system.addBody(&sphere_discretisation1);
+	system.addBody(&sphere_discretisation1);
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window)) {
@@ -145,8 +145,6 @@ int main(void) {
 
 		// Swap front and back buffers
 		glfwSwapBuffers(window);
-
-		getchar();
 	}
 
 	glfwTerminate();
@@ -185,7 +183,7 @@ void resize(GLFWwindow* window) {
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glFrustum(-ratio, ratio, -1.f, 1.f, 0.5f, 10.f);
+	glFrustum(-ratio, ratio, -1.f, 1.f, 1.f, 100.f);
 	//glOrtho(-4.f, 4.f, -4.f, 4.f, 0.5f, 10.f);
 }
 

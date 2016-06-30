@@ -51,7 +51,9 @@ namespace pb {
 	void System::draw(GLuint const v_p, GLuint const i_p, GLuint const n_p,
 					  GLuint const v_s, GLuint const i_s, GLuint const n_s) const {
 		for (auto it = bodies.begin(); it != bodies.end(); it++) {
-			(*it)->drawParticles(v_p, i_p, n_p);
+			// DEBUG draw particles
+			//(*it)->drawParticles(v_p, i_p, n_p);
+			// Draw body
 			(*it)->getBody()->drawBody(v_s, i_s, n_s);
 		}
 	}

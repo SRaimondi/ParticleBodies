@@ -42,7 +42,10 @@ namespace pb {
 	}
 
 	math::mat4x4f Body::getOrientationMatrix() const {
-		return math::createRotationMatrix(physical_properties.q);
+		math::quaternionf p = math::normalize(physical_properties.q);
+		float t = math::magnitude(p);
+		return math::createRotationMatrix(math::normalize(physical_properties.q));
+		//return math::createRotationMatrix(physical_properties.q);
 	}
 
 	math::vec3f Body::pointVelocityWorld(math::vec3f const & p) const {
@@ -53,15 +56,15 @@ namespace pb {
 		return (math::crossProduct(physical_properties.omega, p));
 	}
 
-	void Body::bodyStateToArray(float * y) const {
+	void Body::bodyStateToArray(float y[]) const {
 		stateToArray(&physical_properties, y);
 	}
 
-	void Body::arrayToBodyState(float const * y) {
+	void Body::arrayToBodyState(float const y[]) {
 		arrayToState(&physical_properties, y);
 	}
 
-	void Body::ddtBodyStateToArray(float * y_dot) const {
+	void Body::ddtBodyStateToArray(float y_dot[]) const {
 		ddtStateToArray(&physical_properties, y_dot);
 	}
 
@@ -81,7 +84,7 @@ namespace pb {
 		// Preprocess
 		drawPreprocess();
 
-		//glPolygonMode(GL_FRONT, GL_LINE);
+		glPolygonMode(GL_FRONT, GL_LINE);
 		glDrawElements(GL_TRIANGLES, num_elements, GL_UNSIGNED_SHORT, (GLvoid*)0);
 		glPolygonMode(GL_FRONT, GL_FILL);
 

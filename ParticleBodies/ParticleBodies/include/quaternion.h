@@ -30,10 +30,6 @@ namespace pb {
 		template <typename T>
 		Matrix<T, 3, 3> createMatrix(Quaternion<T> const & q);
 
-		// Norm of the quaterion
-		template <typename T>
-		T norm(Quaternion<T> const & q);
-
 		// Normalize quaternion
 		template <typename T>
 		Quaternion<T> normalize(Quaternion<T> const & q);
@@ -135,9 +131,6 @@ namespace pb {
 			friend Matrix<T, 3, 3> createMatrix(Quaternion<T> const & q);
 
 			template <typename T>
-			friend T norm(Quaternion<T> const & q);
-
-			template <typename T>
 			friend Quaternion<T> normalize(Quaternion<T> const & q);
 
 			template <typename T>
@@ -156,7 +149,10 @@ namespace pb {
 		// Function implementation
 		template <typename T>
 		T magnitude(Quaternion<T> const & q) {
-			return sqrt(q.real * q.real + sqrMagnitude(q.immaginary));
+			return sqrt(q.real * q.real + 
+						q.immaginary(0) * q.immaginary(0) +
+						q.immaginary(1) * q.immaginary(1) +
+						q.immaginary(2) * q.immaginary(2));
 		}
 
 		template <typename T>
@@ -243,15 +239,10 @@ namespace pb {
 		}
 
 		template <typename T>
-		T norm(Quaternion<T> const & q) {
-			return sqrt(q.real * q.real + sqrMagnitude(q.immaginary));
-		}
-
-		template <typename T>
 		Quaternion<T> normalize(Quaternion<T> const & q) {
-			T norm = norm(q);
+			T inv_norm = T(1) / magnitude(q);
 
-			return Quaternion<T>(q.real / norm, q.immaginary / norm);
+			return Quaternion<T>(q.real * inv_norm, q.immaginary * inv_norm);
 		}
 
 		template <typename T>
