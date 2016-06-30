@@ -13,6 +13,11 @@ namespace pb {
 
 	void System::computeForceAndTorque(float const time) const {
 		// Compute forces between bodies using particles approximation
+		for (auto body_1 = bodies.begin(); body_1 != bodies.end() - 1; body_1++) {
+			for (auto body_2 = body_1 + 1; body_2 != bodies.end(); body_2++) {
+				(*body_1)->colliding(*(*body_2));
+			}
+		}
 
 		// Add gravity to all bodies and transfer partcile forces to them
 		for (auto body = bodies.begin(); body != bodies.end(); body++) {
@@ -57,7 +62,7 @@ namespace pb {
 					  GLuint const v_s, GLuint const i_s, GLuint const n_s) const {
 		for (auto it = bodies.begin(); it != bodies.end(); it++) {
 			// DEBUG draw particles
-			//(*it)->drawParticles(v_p, i_p, n_p);
+			(*it)->drawParticles(v_p, i_p, n_p);
 			// Draw body
 			(*it)->getBody()->drawBody(v_s, i_s, n_s);
 		}

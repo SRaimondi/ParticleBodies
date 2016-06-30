@@ -47,7 +47,7 @@ namespace pb {
 		glMultMatrixf(&R(0, 0));
 
 		// Set draw color
-		glColor4f(1.f, 0.f, 0.f, 1.f);
+		glColor4f(1.f, 0.f, 0.f, 0.5f);
 	}
 
 	void Sphere::drawPostprocess() const {

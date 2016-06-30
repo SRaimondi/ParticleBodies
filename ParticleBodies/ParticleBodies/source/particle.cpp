@@ -15,8 +15,4 @@ namespace pb {
 		force(2) = 0.f;
 	}
 
-	bool Particle::colliding(Particle const & other) const {
-		return (pb::math::magnitude(other.position - position) <= radius + other.radius);
-	}
-
 } // pb namespace

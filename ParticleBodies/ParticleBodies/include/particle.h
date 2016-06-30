@@ -16,9 +16,6 @@ namespace pb {
 		// Reset particle forces
 		void resetForce();
 
-		// Check if particle collides with another one
-		bool colliding(Particle const & other) const;
-
 		// Friend declaration
 		friend class BodyParticlesDiscretisation;
 

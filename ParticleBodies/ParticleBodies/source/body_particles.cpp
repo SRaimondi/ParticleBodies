@@ -2,12 +2,15 @@
 #include "body.h"
 #include "voxel_grid.h"
 
+// DEBUG
+#include <iostream>
+
 namespace pb {
 
 	BodyParticlesDiscretisation::BodyParticlesDiscretisation(Body * const body, float const particle_diameter)
 		: body(body) {
 		// Generate particles
-		generateParticles(particle_diameter);
+		generateParticles(particle_diameter, true);
 	}
 
 	void BodyParticlesDiscretisation::generateParticles(float const particle_diameter,
@@ -129,11 +132,33 @@ namespace pb {
 			body->addForce(particle->force);
 			// Apply torque
 			body->addForceAsTorque(particle->force, particle->position);
+			// Reset particle force
+			particle->resetForce();
 		}
 	}
 
 	Body * const BodyParticlesDiscretisation::getBody() const {
 		return body;
+	}
+
+	void BodyParticlesDiscretisation::colliding(BodyParticlesDiscretisation const & other) const {
+		// Very dumb algorithm for the moment, brute force check between all particles
+		for (auto body_1_particle = particles.begin(); body_1_particle != particles.end(); body_1_particle++) {
+			for (auto body_2_particle = other.particles.begin(); body_2_particle != other.particles.end(); body_2_particle++) {
+				// Compute particles global position
+				math::vec3f p1_world_pos = particlePositionWorld(*body_1_particle);
+				math::vec3f p2_world_pos = other.particlePositionWorld(*body_2_particle);
+				// Check if the two particle are collding
+				if (math::magnitude(p2_world_pos - p1_world_pos) <= body_1_particle->radius + body_2_particle->radius) {
+					// Solve collision
+					std::cout << "Collision detected" << std::endl;
+				}
+			}
+		}
+	}
+
+	void BodyParticlesDiscretisation::solveContact(Particle & p1, Particle & p2) const {
+
 	}
 
 } // pb namespace
