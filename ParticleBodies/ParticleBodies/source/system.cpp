@@ -62,7 +62,7 @@ namespace pb {
 					  GLuint const v_s, GLuint const i_s, GLuint const n_s) const {
 		for (auto it = bodies.begin(); it != bodies.end(); it++) {
 			// DEBUG draw particles
-			(*it)->drawParticles(v_p, i_p, n_p);
+			//(*it)->drawParticles(v_p, i_p, n_p);
 			// Draw body
 			(*it)->getBody()->drawBody(v_s, i_s, n_s);
 		}

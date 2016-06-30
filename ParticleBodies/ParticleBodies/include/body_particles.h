@@ -17,7 +17,7 @@ namespace pb {
 		BodyParticlesDiscretisation(Body * const body, float const particle_diameter);
 
 		// Check if two object are colliding
-		void colliding(BodyParticlesDiscretisation const & other) const;
+		void colliding(BodyParticlesDiscretisation & other);
 
 		// Draw all particles
 		void drawParticles(GLuint const sphere_v_buff,
@@ -36,7 +36,8 @@ namespace pb {
 							   bool const process_interior = true);
 
 		// Resolve force between two particle of two different bodies that are colliding
-		void solveContact(Particle & p1, Particle & p2) const;
+		void solveContact(Particle & p1, math::vec3f const & p1_world_position, math::vec3f const & p1_world_speed,
+						  Particle & p2, math::vec3f const & p2_world_position, math::vec3f const & p2_world_speed);
 
 		// Transform particle position to world space
 		math::vec3f particlePositionWorld(Particle const & particle) const;

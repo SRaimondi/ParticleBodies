@@ -27,7 +27,7 @@ int main(void) {
 	GLFWwindow* window;
 	GLenum err;
 
-	r = 5.f;
+	r = 8.f;
 	phi = M_PI / 4.f;
 	tao = M_PI / 4.f;
 
@@ -106,15 +106,18 @@ int main(void) {
 	// Create sphere
 	pb::Body * sphere0 = new pb::Sphere(pb::math::vec3f({ 0.f, 3.f, 0.f }), 1.f, pb::math::quaternionFromAngleAxis(0.f, pb::math::vec3f({1.f, 0.f, 0.f})), 1.f);
 	pb::Body * sphere1 = new pb::Sphere(pb::math::vec3f({ 0.f, -2.f, 0.f }), INFINITY, pb::math::quaternionFromAngleAxis(0.f, pb::math::vec3f({ 1.f, 0.f, 0.f })), 2.f);
+	pb::Body * sphere2 = new pb::Sphere(pb::math::vec3f({ 0.f, 6.f, 0.f }), 1.f, pb::math::quaternionFromAngleAxis(0.f, pb::math::vec3f({ 1.f, 0.f, 0.f })), 1.f);
 
 	// Create sphere discretisation
 	pb::BodyParticlesDiscretisation sphere_discretisation0 = pb::BodyParticlesDiscretisation(sphere0, 0.3f);
 	pb::BodyParticlesDiscretisation sphere_discretisation1 = pb::BodyParticlesDiscretisation(sphere1, 0.3f);
+	pb::BodyParticlesDiscretisation sphere_discretisation2 = pb::BodyParticlesDiscretisation(sphere2, 0.3f);
 
 	pb::System system = pb::System(0.f, 1.f / 30.f);
 
 	system.addBody(&sphere_discretisation0);
 	system.addBody(&sphere_discretisation1);
+	system.addBody(&sphere_discretisation2);
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window)) {

@@ -141,24 +141,44 @@ namespace pb {
 		return body;
 	}
 
-	void BodyParticlesDiscretisation::colliding(BodyParticlesDiscretisation const & other) const {
+	void BodyParticlesDiscretisation::colliding(BodyParticlesDiscretisation & other) {
 		// Very dumb algorithm for the moment, brute force check between all particles
 		for (auto body_1_particle = particles.begin(); body_1_particle != particles.end(); body_1_particle++) {
 			for (auto body_2_particle = other.particles.begin(); body_2_particle != other.particles.end(); body_2_particle++) {
 				// Compute particles global position
-				math::vec3f p1_world_pos = particlePositionWorld(*body_1_particle);
-				math::vec3f p2_world_pos = other.particlePositionWorld(*body_2_particle);
+				math::vec3f const p1_world_pos = particlePositionWorld(*body_1_particle);
+				math::vec3f const p2_world_pos = other.particlePositionWorld(*body_2_particle);
 				// Check if the two particle are collding
 				if (math::magnitude(p2_world_pos - p1_world_pos) <= body_1_particle->radius + body_2_particle->radius) {
+					// Compute particles world speed
+					math::vec3f const p1_world_speed = body->pointVelocityWorld(body_1_particle->position);
+					math::vec3f const p2_world_speed = other.body->pointVelocityWorld(body_2_particle->position);
 					// Solve collision
-					std::cout << "Collision detected" << std::endl;
+					solveContact(*body_1_particle, p1_world_pos, p1_world_speed,
+								 *body_2_particle, p2_world_pos, p2_world_speed);
 				}
 			}
 		}
 	}
 
-	void BodyParticlesDiscretisation::solveContact(Particle & p1, Particle & p2) const {
+	void BodyParticlesDiscretisation::solveContact(Particle & p1, math::vec3f const & p1_world_position, math::vec3f const & p1_world_speed,
+												   Particle & p2, math::vec3f const & p2_world_position, math::vec3f const & p2_world_speed) {
+		// Compute relative position
+		math::vec3f const rel_position = p2_world_position - p1_world_position;
+		// Compute relative speed
+		math::vec3f const rel_speed = p2_world_speed - p1_world_speed;
+		
+		// Compute repulsive force
+		math::vec3f f_rep_12 = (-10.f * (p1.radius + p2.radius - math::magnitude(rel_position))) * math::normalize(rel_position);
+		// Add repulsive forces
+		p1.addForce(f_rep_12);
+		p2.addForce(-f_rep_12);
 
+		// Compute dumping force
+		math::vec3f f_dump_12 = 0.5f * rel_speed;
+		// Add dumping force
+		p1.addForce(f_dump_12);
+		p2.addForce(-f_dump_12);
 	}
 
 } // pb namespace
